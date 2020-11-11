@@ -1,11 +1,10 @@
 package work.employees.employeesTrainingTask.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import work.employees.employeesTrainingTask.response.EmployeeResponse;
 import work.employees.employeesTrainingTask.service.EmployeeService;
+
+import java.util.List;
 
 @RestController
 public class EmployeeController {
@@ -19,5 +18,15 @@ public class EmployeeController {
     @GetMapping("/employees/{id}")
     public EmployeeResponse findEmployeeById(@PathVariable Integer id) {
         return employeeService.getEmployeeById(id);
+    }
+
+    @GetMapping("/employees")
+    public List<EmployeeResponse> findAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    @DeleteMapping("/employees/{id}")
+    public EmployeeResponse deleteEmployee(@PathVariable Integer id) {
+        return employeeService.deleteEmployee(id);
     }
 }
