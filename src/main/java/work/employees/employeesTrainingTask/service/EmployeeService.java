@@ -11,11 +11,9 @@ import work.employees.employeesTrainingTask.domain.Salary;
 import work.employees.employeesTrainingTask.domain.Title;
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
-import work.employees.employeesTrainingTask.response.DepartmentResponse;
-import work.employees.employeesTrainingTask.response.EmployeeResponse;
-import work.employees.employeesTrainingTask.response.SalaryResponse;
-import work.employees.employeesTrainingTask.response.TitleResponse;
+import work.employees.employeesTrainingTask.response.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -43,11 +41,11 @@ public class EmployeeService {
                 .collect(toList());
     }
 
-    public EmployeeResponse deleteEmployee(Integer id) {
+    public EmployeeDeleteResponse deleteEmployee(Integer id) {
         Employee entity = employeeRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Employee with id " + id + " not found"));
         employeeRepository.deleteById(id);
-        return createResponseFromEmployeeEntity(entity);
+        return createEmployeeDeleteResponse("Employee deleted successfully", entity);
     }
 
     public Employee saveEmployee(Employee employee) {
@@ -80,6 +78,10 @@ public class EmployeeService {
 
     private TitleResponse createTitleResponseForEmployee(Title title) {
         return new TitleResponse(title.getTitle(), title.getFromDate(), title.getToDate());
+    }
+
+    private EmployeeDeleteResponse createEmployeeDeleteResponse(String message, Employee employee) {
+        return new EmployeeDeleteResponse(message, createResponseFromEmployeeEntity(employee));
     }
 
 

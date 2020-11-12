@@ -10,12 +10,6 @@ public class DepartmentManager {
 
     @EmbeddedId
     private DepartmentManagerId departmentManagerId;
-//
-//    @ManyToOne
-//    private Employee employee;
-//
-//    @ManyToOne
-//    private Department department;
 
     @Column(name = "from_date")
     private Date fromDate;

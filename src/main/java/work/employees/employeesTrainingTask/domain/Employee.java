@@ -1,5 +1,8 @@
 package work.employees.employeesTrainingTask.domain;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +32,7 @@ public class Employee {
     private Date hireDate;
 
     @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "dept_emp",
             joinColumns = @JoinColumn(name = "emp_no"),
@@ -37,6 +41,7 @@ public class Employee {
     private List<Department> departments;
 
     @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "dept_manager",
             joinColumns = @JoinColumn(name = "emp_no"),
@@ -45,9 +50,11 @@ public class Employee {
     private List<Department> managedDepartments;
 
     @OneToMany(mappedBy = "employeeNumber")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Salary> salaries;
 
     @OneToMany(mappedBy = "employeeNumber")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Title> titles;
 
     public Employee() {
