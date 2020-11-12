@@ -22,8 +22,10 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public List<EmployeeResponse> findAllEmployees() {
-        return employeeService.getAllEmployees();
+    public List<EmployeeResponse> findAllEmployees(@RequestParam(required = false, defaultValue = "0") Integer pageNo,
+                                                   @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+                                                   @RequestParam(required = false, defaultValue = "employeeNumber") String sortBy) {
+        return employeeService.getAllEmployees(pageNo, pageSize, sortBy);
     }
 
     @DeleteMapping("/employees/{id}")

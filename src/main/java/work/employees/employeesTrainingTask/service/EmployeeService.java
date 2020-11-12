@@ -1,5 +1,9 @@
 package work.employees.employeesTrainingTask.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import work.employees.employeesTrainingTask.domain.Department;
 import work.employees.employeesTrainingTask.domain.Employee;
@@ -31,9 +35,10 @@ public class EmployeeService {
         return createResponseFromEmployeeEntity(entity);
     }
 
-    public List<EmployeeResponse> getAllEmployees() {
-        List<Employee> entityList = (List<Employee>) employeeRepository.findAll();
-        return entityList.stream()
+    public List<EmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Employee> pagedResult = employeeRepository.findAll(paging);
+        return pagedResult.stream()
                 .map(this::createResponseFromEmployeeEntity)
                 .collect(toList());
     }
