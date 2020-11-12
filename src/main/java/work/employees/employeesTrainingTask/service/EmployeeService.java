@@ -51,6 +51,9 @@ public class EmployeeService {
     }
 
     public Employee saveEmployee(Employee employee) {
+        if (employee.getEmployeeNumber() == null) {
+            employee.setEmployeeNumber(employeeRepository.getMaxId() + 1);
+        }
         return employeeRepository.save(employee);
     }
 
