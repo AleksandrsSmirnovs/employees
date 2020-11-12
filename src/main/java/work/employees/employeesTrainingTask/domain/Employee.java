@@ -53,13 +53,17 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(Integer employeeNumber, Date birthDate, String firstName, String lastName, Character gender, Date hireDate) {
+    public Employee(Integer employeeNumber, Date birthDate, String firstName, String lastName, Character gender, Date hireDate, List<Department> departments, List<Department> managedDepartments, List<Salary> salaries, List<Title> titles) {
         this.employeeNumber = employeeNumber;
         this.birthDate = birthDate;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.hireDate = hireDate;
+        this.departments = departments;
+        this.managedDepartments = managedDepartments;
+        this.salaries = salaries;
+        this.titles = titles;
     }
 
     public Integer getEmployeeNumber() {
@@ -110,6 +114,38 @@ public class Employee {
         this.hireDate = hireDate;
     }
 
+    public List<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
+    public List<Department> getManagedDepartments() {
+        return managedDepartments;
+    }
+
+    public void setManagedDepartments(List<Department> managedDepartments) {
+        this.managedDepartments = managedDepartments;
+    }
+
+    public List<Salary> getSalaries() {
+        return salaries;
+    }
+
+    public void setSalaries(List<Salary> salaries) {
+        this.salaries = salaries;
+    }
+
+    public List<Title> getTitles() {
+        return titles;
+    }
+
+    public void setTitles(List<Title> titles) {
+        this.titles = titles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -120,23 +156,15 @@ public class Employee {
                 Objects.equals(firstName, employee.firstName) &&
                 Objects.equals(lastName, employee.lastName) &&
                 Objects.equals(gender, employee.gender) &&
-                Objects.equals(hireDate, employee.hireDate);
+                Objects.equals(hireDate, employee.hireDate) &&
+                Objects.equals(departments, employee.departments) &&
+                Objects.equals(managedDepartments, employee.managedDepartments) &&
+                Objects.equals(salaries, employee.salaries) &&
+                Objects.equals(titles, employee.titles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(employeeNumber, birthDate, firstName, lastName, gender, hireDate);
-    }
-
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "employeeNumber=" + employeeNumber +
-                ", birthDate=" + birthDate +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", gender=" + gender +
-                ", hireDate=" + hireDate +
-                '}';
+        return Objects.hash(employeeNumber, birthDate, firstName, lastName, gender, hireDate, departments, managedDepartments, salaries, titles);
     }
 }

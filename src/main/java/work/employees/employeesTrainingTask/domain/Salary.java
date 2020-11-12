@@ -1,18 +1,20 @@
 package work.employees.employeesTrainingTask.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "salaries")
-public class Salary {
+public class Salary implements Serializable {
 
     @Id
     @Column(name = "emp_no")
     private Integer employeeNumber;
 
+    @Id
     @Column(name = "salary")
     private Integer salary;
 

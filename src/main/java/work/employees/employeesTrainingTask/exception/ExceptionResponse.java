@@ -1,13 +1,13 @@
 package work.employees.employeesTrainingTask.exception;
 
-public class ErrorDto {
+public class ExceptionResponse {
 
     private String message;
 
-    public ErrorDto() {
+    public ExceptionResponse() {
     }
 
-    public ErrorDto(String message) {
+    public ExceptionResponse(String message) {
         this.message = message;
     }
 
