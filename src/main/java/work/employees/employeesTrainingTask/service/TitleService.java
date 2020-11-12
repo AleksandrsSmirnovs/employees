@@ -1,7 +1,10 @@
 package work.employees.employeesTrainingTask.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import work.employees.employeesTrainingTask.controller.TitleController;
 import work.employees.employeesTrainingTask.domain.Department;
 import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.domain.Salary;
@@ -13,6 +16,7 @@ import work.employees.employeesTrainingTask.response.EmployeeResponse;
 import work.employees.employeesTrainingTask.response.SalaryResponse;
 import work.employees.employeesTrainingTask.response.TitleResponse;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -21,6 +25,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class TitleService {
 
+    private static final Logger log = LoggerFactory.getLogger(TitleService.class);
     private final TitleRepository titleRepository;
     private final EmployeeRepository employeeRepository;
 
@@ -34,11 +39,22 @@ public class TitleService {
     }
 
     public List<EmployeeResponse> getEmployeesByTitle(String title) {
-        return employeeRepository.getEmployeesByTitle(title).stream().map(this::createResponseFromEmployeeEntity).collect(toList());
+        //TODO!
+        return employeeRepository.getEmployeesByTitle(title).stream().map(this::createSimpleEmployeeResponse).collect(toList());
     }
 
     private TitleResponse createTitleResponse(Title title) {
         return new TitleResponse(title.getTitle());
+    }
+
+    private EmployeeResponse createSimpleEmployeeResponse(Employee entity) {
+        return new EmployeeResponse(entity.getEmployeeNumber(),
+                entity.getBirthDate(),
+                entity.getFirstName(),
+                entity.getLastName(),
+                entity.getGender(),
+                entity.getHireDate()
+        );
     }
 
     private EmployeeResponse createResponseFromEmployeeEntity(Employee entity) {

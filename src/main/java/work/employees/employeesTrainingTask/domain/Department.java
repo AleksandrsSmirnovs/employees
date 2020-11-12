@@ -19,7 +19,6 @@ public class Department {
     private String departmentName;
 
     @OneToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "dept_emp",
             joinColumns = @JoinColumn(name = "dept_no"),
@@ -28,7 +27,6 @@ public class Department {
     List<Employee> employees;
 
     @OneToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "dept_manager",
             joinColumns = @JoinColumn(name = "dept_no"),
