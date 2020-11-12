@@ -9,7 +9,6 @@ import java.util.Objects;
 @Table(name = "titles")
 public class Title implements Serializable {
 
-    @Id
     @Column(name = "emp_no")
     private Integer employeeNumber;
 

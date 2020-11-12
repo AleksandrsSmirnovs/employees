@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class DepartmentService {
 
-    private DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;
 
     public DepartmentService(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
@@ -27,4 +27,5 @@ public class DepartmentService {
     private DepartmentResponse createResponseFromDepartmentEntity(Department entity) {
         return new DepartmentResponse(entity.getDepartmentNumber(), entity.getDepartmentName());
     }
+
 }

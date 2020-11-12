@@ -9,6 +9,10 @@ public class TitleResponse {
     private Date fromDate;
     private Date toDate;
 
+    public TitleResponse(String title) {
+        this.title = title;
+    }
+
     public TitleResponse(String title, Date fromDate, Date toDate) {
         this.title = title;
         this.fromDate = fromDate;

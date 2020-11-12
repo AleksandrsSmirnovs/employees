@@ -1,6 +1,7 @@
 package work.employees.employeesTrainingTask.controller;
 
 import org.springframework.web.bind.annotation.*;
+import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.response.EmployeeResponse;
 import work.employees.employeesTrainingTask.service.EmployeeService;
 
@@ -9,7 +10,7 @@ import java.util.List;
 @RestController
 public class EmployeeController {
 
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
@@ -28,5 +29,10 @@ public class EmployeeController {
     @DeleteMapping("/employees/{id}")
     public EmployeeResponse deleteEmployee(@PathVariable Integer id) {
         return employeeService.deleteEmployee(id);
+    }
+
+    @PostMapping("/employees")
+    Employee newEmployee(@RequestBody Employee employee) {
+        return employeeService.saveEmployee(employee);
     }
 }

@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class EmployeeService {
 
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
@@ -43,6 +43,10 @@ public class EmployeeService {
                 .orElseThrow(() -> new ItemNotFoundException("Employee with id " + id + " not found"));
         employeeRepository.deleteById(id);
         return createResponseFromEmployeeEntity(entity);
+    }
+
+    public Employee saveEmployee(Employee employee) {
+        return employeeRepository.save(employee);
     }
 
     private EmployeeResponse createResponseFromEmployeeEntity(Employee entity) {
