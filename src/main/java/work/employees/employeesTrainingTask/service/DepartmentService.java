@@ -3,8 +3,10 @@ package work.employees.employeesTrainingTask.service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import work.employees.employeesTrainingTask.domain.Department;
+import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.DepartmentRepository;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
@@ -12,6 +14,7 @@ import work.employees.employeesTrainingTask.response.DepartmentResponse;
 import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
 
+import javax.persistence.criteria.Predicate;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,6 +48,5 @@ public class DepartmentService {
         }
         return responseList;
     }
-
 
 }

@@ -41,13 +41,14 @@ public class EmployeeController {
     public List<SimpleEmployeeResponse> findAllEmployees(@RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                                          @RequestParam(required = false, defaultValue = "10") Integer pageSize,
                                                          @RequestParam(required = false, defaultValue = "lastName") String sortBy,
+                                                         @RequestParam(required = false, defaultValue = "asc") String order,
                                                          @And ({
                                                            @Spec(path = "gender", params = "gender", spec = EqualIgnoreCase.class),
                                                            @Spec(path = "hireDate", params = "dateAfter", spec = GreaterThan.class),
                                                            @Spec(path = "hireDate", params = "dateBefore", spec= LessThan. class)
                                                    }) Specification<Employee> employeeSpec) {
         log.info("Received request - get all employees");
-        return employeeService.getAllEmployees(pageNo, pageSize, sortBy, employeeSpec);
+        return employeeService.getAllEmployees(pageNo, pageSize, sortBy, order, employeeSpec);
     }
 
     @DeleteMapping("/{id}")

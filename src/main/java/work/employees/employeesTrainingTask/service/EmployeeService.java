@@ -35,8 +35,8 @@ public class EmployeeService {
         return mapper.createResponseFromEmployeeEntity(entity);
     }
 
-    public List<SimpleEmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String sortBy, Specification<Employee> employeeSpec) {
-        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+    public List<SimpleEmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String sortBy, String order, Specification<Employee> employeeSpec) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, order.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending());
         Page<Employee> pagedResult = employeeRepository.findAll(employeeSpec, paging);
         return pagedResult.stream()
                 .map(mapper::createSimpleEmployeeResponse)
@@ -58,8 +58,6 @@ public class EmployeeService {
         }
         return mapper.createResponseFromEmployeeEntity(employeeRepository.save(mapper.createEmployeeFromCreateRequest(request)));
     }
-
-
 
 
 }

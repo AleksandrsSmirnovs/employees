@@ -1,8 +1,15 @@
 package work.employees.employeesTrainingTask.controller;
 
+import net.kaczmarzyk.spring.data.jpa.domain.EqualIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.domain.GreaterThan;
+import net.kaczmarzyk.spring.data.jpa.domain.LessThan;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
+import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.response.DepartmentResponse;
 import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.service.DepartmentService;
@@ -28,9 +35,14 @@ public class DepartmentController {
 
     @GetMapping("/{departmentName}/employees")
     public List<SimpleEmployeeResponse> getEmployeesByDepartmentName(@PathVariable String departmentName,
-                                                            @RequestParam(required = false, defaultValue = "0") Integer pageNo,
-                                                            @RequestParam(required = false, defaultValue = "10") Integer pageSize,
-                                                            @RequestParam(required = false, defaultValue = "last_name") String sortBy) {
+                                                                     @RequestParam(required = false, defaultValue = "0") Integer pageNo,
+                                                                     @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+                                                                     @RequestParam(required = false, defaultValue = "last_name") String sortBy,
+                                                                     @And ({
+                                                                             @Spec(path = "gender", params = "gender", spec = EqualIgnoreCase.class),
+                                                                             @Spec(path = "hireDate", params = "dateAfter", spec = GreaterThan.class),
+                                                                             @Spec(path = "hireDate", params = "dateBefore", spec= LessThan. class)
+                                                                     }) Specification<Employee> employeeSpec) {
         log.info("Received request - get employees by department name : {}", departmentName);
         return departmentService.getEmployeesByDepartmentName(departmentName, pageNo, pageSize, sortBy);
     }
