@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.exception.ItemAlreadyExistsException;
@@ -34,11 +35,11 @@ public class EmployeeService {
         return mapper.createResponseFromEmployeeEntity(entity);
     }
 
-    public List<EmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String sortBy) {
+    public List<SimpleEmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String sortBy, Specification<Employee> employeeSpec) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        Page<Employee> pagedResult = employeeRepository.findAll(paging);
+        Page<Employee> pagedResult = employeeRepository.findAll(employeeSpec, paging);
         return pagedResult.stream()
-                .map(mapper::createResponseFromEmployeeEntity)
+                .map(mapper::createSimpleEmployeeResponse)
                 .collect(toList());
     }
 
