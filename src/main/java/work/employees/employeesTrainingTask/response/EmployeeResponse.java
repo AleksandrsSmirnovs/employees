@@ -24,16 +24,6 @@ public class EmployeeResponse {
     public EmployeeResponse() {
     }
 
-    public EmployeeResponse(Integer employeeNumber, Date birthDate, String firstName, String lastName, Character gender, Date hireDate) {
-        this.employeeNumber = employeeNumber;
-        this.birthDate = birthDate;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.hireDate = hireDate;
-    }
-
-
     public EmployeeResponse(Integer employeeNumber, Date birthDate, String firstName, String lastName, Character gender, Date hireDate, List<DepartmentResponse> departments, List<DepartmentResponse> managedDepartments, List<SalaryResponse> salaries, List<TitleResponse> titles) {
         this.employeeNumber = employeeNumber;
         this.birthDate = birthDate;

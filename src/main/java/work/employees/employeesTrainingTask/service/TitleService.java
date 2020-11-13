@@ -2,22 +2,16 @@ package work.employees.employeesTrainingTask.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import work.employees.employeesTrainingTask.controller.TitleController;
-import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.Employee;
-import work.employees.employeesTrainingTask.domain.Salary;
-import work.employees.employeesTrainingTask.domain.Title;
+import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
 import work.employees.employeesTrainingTask.repository.TitleRepository;
-import work.employees.employeesTrainingTask.response.DepartmentResponse;
-import work.employees.employeesTrainingTask.response.EmployeeResponse;
-import work.employees.employeesTrainingTask.response.SalaryResponse;
-import work.employees.employeesTrainingTask.response.TitleResponse;
+import work.employees.employeesTrainingTask.response.*;
+import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -28,57 +22,25 @@ public class TitleService {
     private static final Logger log = LoggerFactory.getLogger(TitleService.class);
     private final TitleRepository titleRepository;
     private final EmployeeRepository employeeRepository;
+    private final ResponseMapper mapper;
 
-    public TitleService(TitleRepository titleRepository, EmployeeRepository employeeRepository) {
+    public TitleService(TitleRepository titleRepository, EmployeeRepository employeeRepository, ResponseMapper mapper) {
         this.titleRepository = titleRepository;
         this.employeeRepository = employeeRepository;
+        this.mapper = mapper;
     }
 
     public List<String> getAllTitles(String order) {
         return order.equalsIgnoreCase("desc") ? titleRepository.getAllTitlesDesc() : titleRepository.getAllTitlesAsc();
     }
 
-    public List<EmployeeResponse> getEmployeesByTitle(String title) {
-        //TODO!
-        return employeeRepository.getEmployeesByTitle(title).stream().map(this::createSimpleEmployeeResponse).collect(toList());
+    public List<SimpleEmployeeResponse> getEmployeesByTitle(String title, Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        List<SimpleEmployeeResponse> responseList = employeeRepository.getEmployeesByTitle(title, paging).stream().map(mapper::createSimpleEmployeeResponse).collect(toList());
+        if (responseList.isEmpty()) {
+            throw new ItemNotFoundException("Employees with title " + title + " not found");
+        }
+        return responseList;
     }
 
-    private TitleResponse createTitleResponse(Title title) {
-        return new TitleResponse(title.getTitle());
-    }
-
-    private EmployeeResponse createSimpleEmployeeResponse(Employee entity) {
-        return new EmployeeResponse(entity.getEmployeeNumber(),
-                entity.getBirthDate(),
-                entity.getFirstName(),
-                entity.getLastName(),
-                entity.getGender(),
-                entity.getHireDate()
-        );
-    }
-
-    private EmployeeResponse createResponseFromEmployeeEntity(Employee entity) {
-        return new EmployeeResponse(entity.getEmployeeNumber(),
-                entity.getBirthDate(),
-                entity.getFirstName(),
-                entity.getLastName(),
-                entity.getGender(),
-                entity.getHireDate(),
-                entity.getDepartments().stream().map(this::createDepartmentResponseForEmployee).collect(toList()),
-                entity.getManagedDepartments().stream().map(this::createDepartmentResponseForEmployee).collect(toList()),
-                entity.getSalaries().stream().map(this::createSalaryResponseForEmployee).collect(toList()),
-                entity.getTitles().stream().map(this::createTitleResponseForEmployee).collect(toList()));
-    }
-
-    private DepartmentResponse createDepartmentResponseForEmployee(Department department) {
-        return new DepartmentResponse(department.getDepartmentNumber(), department.getDepartmentName());
-    }
-
-    private SalaryResponse createSalaryResponseForEmployee(Salary salary) {
-        return new SalaryResponse(salary.getSalary(), salary.getFromDate(), salary.getToDate());
-    }
-
-    private TitleResponse createTitleResponseForEmployee(Title title) {
-        return new TitleResponse(title.getTitle(), title.getFromDate(), title.getToDate());
-    }
 }

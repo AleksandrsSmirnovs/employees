@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import work.employees.employeesTrainingTask.exception.ControllerExceptionHandler;
+import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.response.EmployeeResponse;
+import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.response.TitleResponse;
 import work.employees.employeesTrainingTask.service.TitleService;
 
@@ -23,13 +25,17 @@ public class TitleController {
 
     @GetMapping
     public List<String> getAllTitles(@RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+        log.info("Received request - get all titles");
         return titleService.getAllTitles(order);
     }
 
     @GetMapping("/{title}/employees")
-    public List<EmployeeResponse> getEmployeesByTitle(@PathVariable String title) {
+    public List<SimpleEmployeeResponse> getEmployeesByTitle(@PathVariable String title,
+                                                            @RequestParam(required = false, defaultValue = "0") Integer pageNo,
+                                                            @RequestParam(required = false, defaultValue = "10") Integer pageSize,
+                                                            @RequestParam(required = false, defaultValue = "last_name") String sortBy) {
         log.info("Received request - get employees by title : {}", title);
-        return titleService.getEmployeesByTitle(title);
+        return titleService.getEmployeesByTitle(title, pageNo, pageSize, sortBy);
     }
 
 }

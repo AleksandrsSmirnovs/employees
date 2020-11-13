@@ -7,12 +7,12 @@ import java.util.Objects;
 public class EmployeeDeleteResponse {
 
     private String message;
-    private EmployeeResponse employee;
+    private SimpleEmployeeResponse employee;
 
     public EmployeeDeleteResponse() {
     }
 
-    public EmployeeDeleteResponse(String message, EmployeeResponse employee) {
+    public EmployeeDeleteResponse(String message, SimpleEmployeeResponse employee) {
         this.message = message;
         this.employee = employee;
     }
@@ -25,11 +25,11 @@ public class EmployeeDeleteResponse {
         this.message = message;
     }
 
-    public EmployeeResponse getEmployee() {
+    public SimpleEmployeeResponse getEmployee() {
         return employee;
     }
 
-    public void setEmployee(EmployeeResponse employee) {
+    public void setEmployee(SimpleEmployeeResponse employee) {
         this.employee = employee;
     }
 

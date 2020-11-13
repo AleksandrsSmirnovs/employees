@@ -1,73 +1,41 @@
-package work.employees.employeesTrainingTask.domain;
+package work.employees.employeesTrainingTask.request;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import work.employees.employeesTrainingTask.domain.Department;
+import work.employees.employeesTrainingTask.domain.Salary;
+import work.employees.employeesTrainingTask.domain.Title;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "employees")
-public class Employee {
+public class CreateEmployeeRequest {
 
-    @Id
-    @Column(name = "emp_no")
     private Integer employeeNumber;
 
-    @Column(name = "birth_date")
+    @NotNull
     private Date birthDate;
 
-    @Column(name = "first_name")
+    @NotEmpty
     private String firstName;
 
-    @Column(name = "last_name")
+    @NotEmpty
     private String lastName;
 
-    @Column(name = "gender")
+    @NotNull
     private Character gender;
 
-    @Column(name = "hire_date")
+    @NotNull
     private Date hireDate;
 
-    @OneToMany
-    @JoinTable(
-            name = "dept_emp",
-            joinColumns = @JoinColumn(name = "emp_no"),
-            inverseJoinColumns = @JoinColumn(name = "dept_no")
-    )
     private List<Department> departments;
 
-    @OneToMany
-    @JoinTable(
-            name = "dept_manager",
-            joinColumns = @JoinColumn(name = "emp_no"),
-            inverseJoinColumns = @JoinColumn(name = "dept_no")
-    )
     private List<Department> managedDepartments;
 
-    @OneToMany(mappedBy = "employeeNumber")
     private List<Salary> salaries;
 
-    @OneToMany(mappedBy = "employeeNumber")
     private List<Title> titles;
-
-    public Employee() {
-    }
-
-    public Employee(Integer employeeNumber, Date birthDate, String firstName, String lastName, Character gender, Date hireDate, List<Department> departments, List<Department> managedDepartments, List<Salary> salaries, List<Title> titles) {
-        this.employeeNumber = employeeNumber;
-        this.birthDate = birthDate;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.hireDate = hireDate;
-        this.departments = departments;
-        this.managedDepartments = managedDepartments;
-        this.salaries = salaries;
-        this.titles = titles;
-    }
 
     public Integer getEmployeeNumber() {
         return employeeNumber;
@@ -153,17 +121,17 @@ public class Employee {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Employee employee = (Employee) o;
-        return Objects.equals(employeeNumber, employee.employeeNumber) &&
-                Objects.equals(birthDate, employee.birthDate) &&
-                Objects.equals(firstName, employee.firstName) &&
-                Objects.equals(lastName, employee.lastName) &&
-                Objects.equals(gender, employee.gender) &&
-                Objects.equals(hireDate, employee.hireDate) &&
-                Objects.equals(departments, employee.departments) &&
-                Objects.equals(managedDepartments, employee.managedDepartments) &&
-                Objects.equals(salaries, employee.salaries) &&
-                Objects.equals(titles, employee.titles);
+        CreateEmployeeRequest that = (CreateEmployeeRequest) o;
+        return Objects.equals(employeeNumber, that.employeeNumber) &&
+                Objects.equals(birthDate, that.birthDate) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(gender, that.gender) &&
+                Objects.equals(hireDate, that.hireDate) &&
+                Objects.equals(departments, that.departments) &&
+                Objects.equals(managedDepartments, that.managedDepartments) &&
+                Objects.equals(salaries, that.salaries) &&
+                Objects.equals(titles, that.titles);
     }
 
     @Override
@@ -173,7 +141,7 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" +
+        return "CreateEmployeeRequest{" +
                 "employeeNumber=" + employeeNumber +
                 ", birthDate=" + birthDate +
                 ", firstName='" + firstName + '\'' +

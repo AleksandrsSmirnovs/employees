@@ -1,11 +1,17 @@
 package work.employees.employeesTrainingTask.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import work.employees.employeesTrainingTask.domain.Employee;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.EmployeeDeleteResponse;
 import work.employees.employeesTrainingTask.response.EmployeeResponse;
 import work.employees.employeesTrainingTask.service.EmployeeService;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -13,13 +19,15 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private static final Logger log = LoggerFactory.getLogger(EmployeeController.class);
 
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
     @GetMapping("/{id}")
-    public EmployeeResponse findEmployeeById(@PathVariable Integer id) {
+    public EmployeeResponse getEmployeeById(@PathVariable Integer id) {
+        log.info("Received request - get employee by id. Id = {}", id);
         return employeeService.getEmployeeById(id);
     }
 
@@ -27,16 +35,23 @@ public class EmployeeController {
     public List<EmployeeResponse> findAllEmployees(@RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                                    @RequestParam(required = false, defaultValue = "10") Integer pageSize,
                                                    @RequestParam(required = false, defaultValue = "lastName") String sortBy) {
+        log.info("Received request - get all employees");
         return employeeService.getAllEmployees(pageNo, pageSize, sortBy);
     }
 
     @DeleteMapping("/{id}")
     public EmployeeDeleteResponse deleteEmployee(@PathVariable Integer id) {
+        log.info("Received request - delete employee by id. Id = {}", id);
         return employeeService.deleteEmployee(id);
     }
 
     @PostMapping
-    Employee newEmployee(@RequestBody Employee employee) {
-        return employeeService.saveEmployee(employee);
+    public EmployeeResponse saveEmployee(@Validated @RequestBody CreateEmployeeRequest request, HttpServletResponse response) {
+        log.info("Received request - save employee: {}", request);
+        EmployeeResponse employeeResponse = employeeService.saveEmployee(request);
+        response.setHeader("Location", ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/employees/" + employeeResponse.getEmployeeNumber()).toUriString());
+        response.setStatus(response.SC_CREATED);
+        return employeeResponse;
     }
 }

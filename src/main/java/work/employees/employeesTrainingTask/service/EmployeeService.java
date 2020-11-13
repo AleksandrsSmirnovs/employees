@@ -5,15 +5,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import work.employees.employeesTrainingTask.domain.Department;
 import work.employees.employeesTrainingTask.domain.Employee;
-import work.employees.employeesTrainingTask.domain.Salary;
-import work.employees.employeesTrainingTask.domain.Title;
+import work.employees.employeesTrainingTask.exception.ItemAlreadyExistsException;
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
+import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
+import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -22,22 +21,24 @@ import static java.util.stream.Collectors.toList;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final ResponseMapper mapper;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, ResponseMapper mapper) {
         this.employeeRepository = employeeRepository;
+        this.mapper = mapper;
     }
 
     public EmployeeResponse getEmployeeById(Integer id) {
         Employee entity = employeeRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Employee with id " + id + " not found"));
-        return createResponseFromEmployeeEntity(entity);
+        return mapper.createResponseFromEmployeeEntity(entity);
     }
 
     public List<EmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String sortBy) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         Page<Employee> pagedResult = employeeRepository.findAll(paging);
         return pagedResult.stream()
-                .map(this::createResponseFromEmployeeEntity)
+                .map(mapper::createResponseFromEmployeeEntity)
                 .collect(toList());
     }
 
@@ -45,44 +46,18 @@ public class EmployeeService {
         Employee entity = employeeRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Employee with id " + id + " not found"));
         employeeRepository.deleteById(id);
-        return createEmployeeDeleteResponse("Employee deleted successfully", entity);
+        return mapper.createEmployeeDeleteResponse("Employee deleted successfully", entity);
     }
 
-    public Employee saveEmployee(Employee employee) {
-        if (employee.getEmployeeNumber() == null) {
-            employee.setEmployeeNumber(employeeRepository.getMaxId() + 1);
+    public EmployeeResponse saveEmployee(CreateEmployeeRequest request) {
+        if (request.getEmployeeNumber() == null || request.getEmployeeNumber() > employeeRepository.getMaxId()) {
+            request.setEmployeeNumber(employeeRepository.getMaxId() + 1);
+        } else {
+            throw new ItemAlreadyExistsException("Item with id " + request.getEmployeeNumber() + " already exists");
         }
-        return employeeRepository.save(employee);
+        return mapper.createResponseFromEmployeeEntity(employeeRepository.save(mapper.createEmployeeFromCreateRequest(request)));
     }
 
-    private EmployeeResponse createResponseFromEmployeeEntity(Employee entity) {
-        return new EmployeeResponse(entity.getEmployeeNumber(),
-                entity.getBirthDate(),
-                entity.getFirstName(),
-                entity.getLastName(),
-                entity.getGender(),
-                entity.getHireDate(),
-                entity.getDepartments().stream().map(this::createDepartmentResponseForEmployee).collect(toList()),
-                entity.getManagedDepartments().stream().map(this::createDepartmentResponseForEmployee).collect(toList()),
-                entity.getSalaries().stream().map(this::createSalaryResponseForEmployee).collect(toList()),
-                entity.getTitles().stream().map(this::createTitleResponseForEmployee).collect(toList()));
-    }
-
-    private DepartmentResponse createDepartmentResponseForEmployee(Department department) {
-        return new DepartmentResponse(department.getDepartmentNumber(), department.getDepartmentName());
-    }
-
-    private SalaryResponse createSalaryResponseForEmployee(Salary salary) {
-        return new SalaryResponse(salary.getSalary(), salary.getFromDate(), salary.getToDate());
-    }
-
-    private TitleResponse createTitleResponseForEmployee(Title title) {
-        return new TitleResponse(title.getTitle(), title.getFromDate(), title.getToDate());
-    }
-
-    private EmployeeDeleteResponse createEmployeeDeleteResponse(String message, Employee employee) {
-        return new EmployeeDeleteResponse(message, createResponseFromEmployeeEntity(employee));
-    }
 
 
 
