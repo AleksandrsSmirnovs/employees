@@ -14,6 +14,8 @@ import work.employees.employeesTrainingTask.response.DepartmentResponse;
 import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.service.DepartmentService;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -38,12 +40,10 @@ public class DepartmentController {
                                                                      @RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                                                      @RequestParam(required = false, defaultValue = "10") Integer pageSize,
                                                                      @RequestParam(required = false, defaultValue = "last_name") String sortBy,
-                                                                     @And ({
-                                                                             @Spec(path = "gender", params = "gender", spec = EqualIgnoreCase.class),
-                                                                             @Spec(path = "hireDate", params = "dateAfter", spec = GreaterThan.class),
-                                                                             @Spec(path = "hireDate", params = "dateBefore", spec= LessThan. class)
-                                                                     }) Specification<Employee> employeeSpec) {
+                                                                     @RequestParam(required = false) Character gender,
+                                                                     @RequestParam(required = false) String hireDateBefore,
+                                                                     @RequestParam(required = false) String hireDateAfter) {
         log.info("Received request - get employees by department name : {}", departmentName);
-        return departmentService.getEmployeesByDepartmentName(departmentName, pageNo, pageSize, sortBy);
+        return departmentService.getEmployeesByDepartmentName(departmentName, pageNo, pageSize, sortBy, gender, hireDateBefore, hireDateAfter);
     }
 }

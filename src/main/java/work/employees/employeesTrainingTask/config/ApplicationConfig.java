@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Configuration
@@ -20,5 +21,10 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new SpecificationArgumentResolver());
+    }
+
+    @Bean
+    public SimpleDateFormat dateFormatter() {
+        return new SimpleDateFormat("yyyy-MM-dd");
     }
 }
