@@ -3,11 +3,7 @@ package work.employees.employeesTrainingTask.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import work.employees.employeesTrainingTask.exception.ControllerExceptionHandler;
-import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
-import work.employees.employeesTrainingTask.response.EmployeeResponse;
 import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
-import work.employees.employeesTrainingTask.response.TitleResponse;
 import work.employees.employeesTrainingTask.service.TitleService;
 
 import java.util.List;
@@ -33,9 +29,12 @@ public class TitleController {
     public List<SimpleEmployeeResponse> getEmployeesByTitle(@PathVariable String title,
                                                             @RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                                             @RequestParam(required = false, defaultValue = "10") Integer pageSize,
-                                                            @RequestParam(required = false, defaultValue = "last_name") String sortBy) {
+                                                            @RequestParam(required = false, defaultValue = "last_name") String sortBy,
+                                                            @RequestParam(required = false) Character gender,
+                                                            @RequestParam(required = false) String hireDateBefore,
+                                                            @RequestParam(required = false) String hireDateAfter) {
         log.info("Received request - get employees by title : {}", title);
-        return titleService.getEmployeesByTitle(title, pageNo, pageSize, sortBy);
+        return titleService.getEmployeesByTitle(title, pageNo, pageSize, sortBy, gender, hireDateBefore, hireDateAfter);
     }
 
 }

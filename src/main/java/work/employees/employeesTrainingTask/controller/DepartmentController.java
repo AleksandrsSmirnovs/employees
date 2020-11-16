@@ -1,21 +1,12 @@
 package work.employees.employeesTrainingTask.controller;
 
-import net.kaczmarzyk.spring.data.jpa.domain.EqualIgnoreCase;
-import net.kaczmarzyk.spring.data.jpa.domain.GreaterThan;
-import net.kaczmarzyk.spring.data.jpa.domain.LessThan;
-import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
-import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
-import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.response.DepartmentResponse;
 import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.service.DepartmentService;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 @RestController

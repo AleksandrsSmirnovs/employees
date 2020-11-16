@@ -13,6 +13,7 @@ import work.employees.employeesTrainingTask.response.*;
 import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -34,9 +35,12 @@ public class TitleService {
         return order.equalsIgnoreCase("desc") ? titleRepository.getAllTitlesDesc() : titleRepository.getAllTitlesAsc();
     }
 
-    public List<SimpleEmployeeResponse> getEmployeesByTitle(String title, Integer pageNo, Integer pageSize, String sortBy) {
+    public List<SimpleEmployeeResponse> getEmployeesByTitle(String title, Integer pageNo, Integer pageSize, String sortBy, Character gender, String hireDateBefore, String hireDateAfter) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        List<SimpleEmployeeResponse> responseList = employeeRepository.getEmployeesByTitle(title, paging).stream().map(mapper::createSimpleEmployeeResponse).collect(toList());
+        String genderParam = gender == null ? "%" : gender.toString();
+        String hireDateBeforeParam = Objects.requireNonNullElse(hireDateBefore, "9999-01-01");
+        String hireDateAfterParam = Objects.requireNonNullElse(hireDateAfter, "0000-01-01");
+        List<SimpleEmployeeResponse> responseList = employeeRepository.getEmployeesByTitle(title, genderParam, hireDateBeforeParam, hireDateAfterParam, paging).stream().map(mapper::createSimpleEmployeeResponse).collect(toList());
         if (responseList.isEmpty()) {
             throw new ItemNotFoundException("Employees with title " + title + " not found");
         }

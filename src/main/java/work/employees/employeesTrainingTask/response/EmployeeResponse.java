@@ -1,9 +1,5 @@
 package work.employees.employeesTrainingTask.response;
 
-import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.Salary;
-import work.employees.employeesTrainingTask.domain.Title;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;

@@ -9,9 +9,6 @@ import java.util.Objects;
 @Table(name = "dept_emp")
 public class DepartmentEmployee implements Serializable {
 
-//    @EmbeddedId
-//    private DepartmentEmployeeId departmentEmployeeId;
-
     @Id
     @Column(name = "dept_no", columnDefinition = "char")
     private String departmentNumber;
@@ -19,13 +16,6 @@ public class DepartmentEmployee implements Serializable {
     @Id
     @Column(name = "emp_no")
     private Integer employeeNumber;
-//    @ManyToOne
-//    @MapsId("employeeNumber")
-//    private Employee employee;
-//
-//    @ManyToOne
-//    @MapsId("departmentNumber")
-//    private Department department;
 
     @Column(name = "from_date")
     private Date fromDate;
