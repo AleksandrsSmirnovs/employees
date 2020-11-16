@@ -19,8 +19,8 @@ public interface EmployeeRepository extends PagingAndSortingRepository<Employee,
     @Query(value = "SELECT MAX(emp_no) FROM employees", nativeQuery = true)
     Integer getMaxId();
 
-    @Query(value = "SELECT * FROM employees AS e JOIN dept_emp AS de ON e.emp_no = de.emp_no JOIN departments AS d ON de.dept_no = d.dept_no WHERE d.dept_name = :departmentName AND de.to_date > NOW()", nativeQuery = true)
-    List<Employee> getEmployeesByDepartmentName(@Param("departmentName") String departmentName, Pageable paging);
+    @Query(value = "SELECT * FROM employees AS e JOIN dept_emp AS de ON e.emp_no = de.emp_no JOIN departments AS d ON de.dept_no = d.dept_no WHERE d.dept_name = :departmentName AND de.to_date > NOW() AND gender LIKE :gender AND hire_date < :hireDateBefore AND hire_date > :hireDateAfter", nativeQuery = true)
+    List<Employee> getEmployeesByDepartmentName(@Param("departmentName") String departmentName, @Param("gender") String gender, @Param("hireDateBefore") String hireDateBefore, @Param("hireDateAfter") String hireDateAfter, Pageable paging);
 
     @Query(value = "SELECT * FROM employees WHERE gender LIKE :gender AND hire_date < :hireDateBefore AND hire_date > :hireDateAfter", nativeQuery = true)
     List<Employee> findAllWithParams(@Param("gender") String gender, @Param("hireDateBefore") String hireDateBefore, @Param("hireDateAfter") String hireDateAfter, Pageable pageable);

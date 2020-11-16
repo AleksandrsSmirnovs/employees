@@ -21,7 +21,7 @@ public class DataSorter {
                 orders.add(new Sort.Order(getSortDirection(_sort[1]), _sort[0]));
             }
         } else {
-            orders.add(new Sort.Order(getSortDirection(sort[1]), sort[0]));
+            orders.add(new Sort.Order(Sort.Direction.ASC, sort[0]));
         }
         return orders;
     }

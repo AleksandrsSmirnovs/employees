@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -46,24 +47,12 @@ public class DepartmentService {
 
     public List<SimpleEmployeeResponse> getEmployeesByDepartmentName(String departmentName, Integer pageNo, Integer pageSize, String[] sort, Character gender, String hireDateBefore, String hireDateAfter) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sorter.getOrders(sort)));
+        String genderParam = gender == null ? "%" : gender.toString();
+        String hireDateBeforeParam = Objects.requireNonNullElse(hireDateBefore, "9999-01-01");
+        String hireDateAfterParam = Objects.requireNonNullElse(hireDateAfter, "0000-01-01");
         List<SimpleEmployeeResponse> responseList = employeeRepository
-                .getEmployeesByDepartmentName(departmentName, paging)
+                .getEmployeesByDepartmentName(departmentName, genderParam, hireDateBeforeParam, hireDateAfterParam, paging)
                 .stream()
-                .filter(employee -> gender == null || employee.getGender() == gender)
-                .filter(employee -> {
-                    try {
-                        return hireDateBefore == null || employee.getHireDate().compareTo(dateFormatter.parse(hireDateBefore)) < 0;
-                    } catch (ParseException e) {
-                        return true;
-                    }
-                })
-                .filter(employee -> {
-                    try {
-                        return hireDateBefore == null || employee.getHireDate().compareTo(dateFormatter.parse(hireDateAfter)) > 0;
-                    } catch (ParseException e) {
-                        return true;
-                    }
-                })
                 .map(mapper::createSimpleEmployeeResponse)
                 .collect(toList());
         if (responseList.isEmpty()) {
