@@ -1,10 +1,8 @@
 package work.employees.employeesTrainingTask.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.exception.ItemAlreadyExistsException;
