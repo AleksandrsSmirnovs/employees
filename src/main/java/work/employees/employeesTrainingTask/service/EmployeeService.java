@@ -13,8 +13,10 @@ import work.employees.employeesTrainingTask.repository.EmployeeRepository;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
 import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
+import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -23,10 +25,12 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final ResponseMapper mapper;
+    private final DataSorter sorter;
 
-    public EmployeeService(EmployeeRepository employeeRepository, ResponseMapper mapper) {
+    public EmployeeService(EmployeeRepository employeeRepository, ResponseMapper mapper, DataSorter sorter) {
         this.employeeRepository = employeeRepository;
         this.mapper = mapper;
+        this.sorter = sorter;
     }
 
     public EmployeeResponse getEmployeeById(Integer id) {
@@ -35,9 +39,12 @@ public class EmployeeService {
         return mapper.createResponseFromEmployeeEntity(entity);
     }
 
-    public List<SimpleEmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String sortBy, String order, Specification<Employee> employeeSpec) {
-        Pageable paging = PageRequest.of(pageNo, pageSize, order.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending());
-        Page<Employee> pagedResult = employeeRepository.findAll(employeeSpec, paging);
+    public List<SimpleEmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String[] sort, Character gender, String hireDateBefore, String hireDateAfter) {
+        String genderParam = gender == null ? "%" : gender.toString();
+        String hireDateBeforeParam = Objects.requireNonNullElse(hireDateBefore, "9999-01-01");
+        String hireDateAfterParam = Objects.requireNonNullElse(hireDateAfter, "0000-01-01");
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sorter.getOrders(sort)));
+        List<Employee> pagedResult = employeeRepository.findAllWithParams(genderParam, hireDateBeforeParam, hireDateAfterParam, paging);
         return pagedResult.stream()
                 .map(mapper::createSimpleEmployeeResponse)
                 .collect(toList());
@@ -58,6 +65,5 @@ public class EmployeeService {
         }
         return mapper.createResponseFromEmployeeEntity(employeeRepository.save(mapper.createEmployeeFromCreateRequest(request)));
     }
-
 
 }

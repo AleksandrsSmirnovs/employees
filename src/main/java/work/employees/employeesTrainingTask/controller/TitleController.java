@@ -29,12 +29,12 @@ public class TitleController {
     public List<SimpleEmployeeResponse> getEmployeesByTitle(@PathVariable String title,
                                                             @RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                                             @RequestParam(required = false, defaultValue = "10") Integer pageSize,
-                                                            @RequestParam(required = false, defaultValue = "last_name") String sortBy,
+                                                            @RequestParam(required = false, defaultValue = "lastName,asc") String[] sort,
                                                             @RequestParam(required = false) Character gender,
                                                             @RequestParam(required = false) String hireDateBefore,
                                                             @RequestParam(required = false) String hireDateAfter) {
         log.info("Received request - get employees by title : {}", title);
-        return titleService.getEmployeesByTitle(title, pageNo, pageSize, sortBy, gender, hireDateBefore, hireDateAfter);
+        return titleService.getEmployeesByTitle(title, pageNo, pageSize, sort, gender, hireDateBefore, hireDateAfter);
     }
 
 }

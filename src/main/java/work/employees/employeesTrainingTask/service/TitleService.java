@@ -11,6 +11,7 @@ import work.employees.employeesTrainingTask.repository.EmployeeRepository;
 import work.employees.employeesTrainingTask.repository.TitleRepository;
 import work.employees.employeesTrainingTask.response.*;
 import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
+import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,19 +25,21 @@ public class TitleService {
     private final TitleRepository titleRepository;
     private final EmployeeRepository employeeRepository;
     private final ResponseMapper mapper;
+    private final DataSorter sorter;
 
-    public TitleService(TitleRepository titleRepository, EmployeeRepository employeeRepository, ResponseMapper mapper) {
+    public TitleService(TitleRepository titleRepository, EmployeeRepository employeeRepository, ResponseMapper mapper, DataSorter sorter) {
         this.titleRepository = titleRepository;
         this.employeeRepository = employeeRepository;
         this.mapper = mapper;
+        this.sorter = sorter;
     }
 
     public List<String> getAllTitles(String order) {
         return order.equalsIgnoreCase("desc") ? titleRepository.getAllTitlesDesc() : titleRepository.getAllTitlesAsc();
     }
 
-    public List<SimpleEmployeeResponse> getEmployeesByTitle(String title, Integer pageNo, Integer pageSize, String sortBy, Character gender, String hireDateBefore, String hireDateAfter) {
-        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+    public List<SimpleEmployeeResponse> getEmployeesByTitle(String title, Integer pageNo, Integer pageSize, String[] sort, Character gender, String hireDateBefore, String hireDateAfter) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sorter.getOrders(sort)));
         String genderParam = gender == null ? "%" : gender.toString();
         String hireDateBeforeParam = Objects.requireNonNullElse(hireDateBefore, "9999-01-01");
         String hireDateAfterParam = Objects.requireNonNullElse(hireDateAfter, "0000-01-01");

@@ -11,6 +11,7 @@ import work.employees.employeesTrainingTask.repository.EmployeeRepository;
 import work.employees.employeesTrainingTask.response.DepartmentResponse;
 import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
+import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,12 +27,14 @@ public class DepartmentService {
     private final EmployeeRepository employeeRepository;
     private final ResponseMapper mapper;
     private final SimpleDateFormat dateFormatter;
+    private final DataSorter sorter;
 
-    public DepartmentService(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository, ResponseMapper mapper, SimpleDateFormat dateFormatter) {
+    public DepartmentService(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository, ResponseMapper mapper, SimpleDateFormat dateFormatter, DataSorter sorter) {
         this.departmentRepository = departmentRepository;
         this.employeeRepository = employeeRepository;
         this.mapper = mapper;
         this.dateFormatter = dateFormatter;
+        this.sorter = sorter;
     }
 
     public List<DepartmentResponse> getAllDepartments(String order) {
@@ -41,8 +44,8 @@ public class DepartmentService {
                 entityList.stream().sorted(Comparator.comparing(Department::getDepartmentName)).map(mapper::createResponseFromDepartmentEntity).collect(toList());
     }
 
-    public List<SimpleEmployeeResponse> getEmployeesByDepartmentName(String departmentName, Integer pageNo, Integer pageSize, String sortBy, Character gender, String hireDateBefore, String hireDateAfter) {
-        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+    public List<SimpleEmployeeResponse> getEmployeesByDepartmentName(String departmentName, Integer pageNo, Integer pageSize, String[] sort, Character gender, String hireDateBefore, String hireDateAfter) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sorter.getOrders(sort)));
         List<SimpleEmployeeResponse> responseList = employeeRepository
                 .getEmployeesByDepartmentName(departmentName, paging)
                 .stream()

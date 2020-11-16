@@ -1,15 +1,10 @@
 package work.employees.employeesTrainingTask.controller;
 
-import net.kaczmarzyk.spring.data.jpa.domain.*;
-import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
-import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.EmployeeDeleteResponse;
 import work.employees.employeesTrainingTask.response.EmployeeResponse;
@@ -39,15 +34,12 @@ public class EmployeeController {
     @GetMapping
     public List<SimpleEmployeeResponse> findAllEmployees(@RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                                          @RequestParam(required = false, defaultValue = "10") Integer pageSize,
-                                                         @RequestParam(required = false, defaultValue = "lastName") String sortBy,
-                                                         @RequestParam(required = false, defaultValue = "asc") String order,
-                                                         @And ({
-                                                           @Spec(path = "gender", params = "gender", spec = EqualIgnoreCase.class),
-                                                           @Spec(path = "hireDate", params = "dateAfter", spec = GreaterThan.class),
-                                                           @Spec(path = "hireDate", params = "dateBefore", spec= LessThan. class)
-                                                   }) Specification<Employee> employeeSpec) {
+                                                         @RequestParam(required = false, defaultValue = "last_name,asc") String[] sort,
+                                                         @RequestParam(required = false) Character gender,
+                                                         @RequestParam(required = false) String hireDateBefore,
+                                                         @RequestParam(required = false) String hireDateAfter) {
         log.info("Received request - get all employees");
-        return employeeService.getAllEmployees(pageNo, pageSize, sortBy, order, employeeSpec);
+        return employeeService.getAllEmployees(pageNo, pageSize, sort, gender, hireDateBefore, hireDateAfter);
     }
 
     @DeleteMapping("/{id}")
