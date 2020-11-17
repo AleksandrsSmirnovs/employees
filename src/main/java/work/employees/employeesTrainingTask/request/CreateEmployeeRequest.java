@@ -37,6 +37,22 @@ public class CreateEmployeeRequest {
 
     private List<Title> titles;
 
+    public CreateEmployeeRequest() {
+    }
+
+    public CreateEmployeeRequest(Integer employeeNumber, @NotNull Date birthDate, @NotEmpty String firstName, @NotEmpty String lastName, @NotNull Character gender, @NotNull Date hireDate, List<Department> departments, List<Department> managedDepartments, List<Salary> salaries, List<Title> titles) {
+        this.employeeNumber = employeeNumber;
+        this.birthDate = birthDate;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.hireDate = hireDate;
+        this.departments = departments;
+        this.managedDepartments = managedDepartments;
+        this.salaries = salaries;
+        this.titles = titles;
+    }
+
     public Integer getEmployeeNumber() {
         return employeeNumber;
     }

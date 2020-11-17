@@ -1,37 +1,32 @@
 package work.employees.employeesTrainingTask.service;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.Employee;
-import work.employees.employeesTrainingTask.domain.Salary;
-import work.employees.employeesTrainingTask.domain.Title;
+import work.employees.employeesTrainingTask.exception.ItemAlreadyExistsException;
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
 import work.employees.employeesTrainingTask.response.*;
-import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
+import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static work.employees.employeesTrainingTask.utils.TestUtils.*;
+import static work.employees.employeesTrainingTask.utils.TestUtils.sampleEmployeeList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmployeeServiceTest {
-
-    private SimpleDateFormat dateFormatter;
 
     @Mock
     private EmployeeRepository repository;
@@ -45,10 +40,6 @@ public class EmployeeServiceTest {
     @InjectMocks
     private EmployeeService victim;
 
-    @Before
-    public void init() {
-        dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-    }
 
     @Test
     public void shouldFindAllEmployeesWhenNoParametersPassed() throws ParseException {
@@ -81,10 +72,10 @@ public class EmployeeServiceTest {
     @Test
     public void shouldFindEmployeeById() throws ParseException {
         when(repository.findById(any())).thenReturn(Optional.of(sampleEmployee()));
-        when(mapper.createResponseFromEmployeeEntity(any())).thenReturn(sampleEmployeeResponse());
+        when(mapper.createEmployeeResponse(any())).thenReturn(sampleEmployeeResponse());
         victim.getEmployeeById(123);
         verify(repository, times(1)).findById(123);
-        verify(mapper, times(1)).createResponseFromEmployeeEntity(any());
+        verify(mapper, times(1)).createEmployeeResponse(any());
         verifyNoMoreInteractions(repository);
         verifyNoMoreInteractions(mapper);
     }
@@ -121,89 +112,21 @@ public class EmployeeServiceTest {
         verifyNoInteractions(mapper);
     }
 
-    private Employee sampleEmployee() throws ParseException {
-        return new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
-                sampleDepartmentList(),
-                sampleManagedDepartmentList(),
-                sampleSalaryList(),
-                sampleTitleList());
+    @Test
+    public void shouldSaveEmployee() throws ParseException {
+        when(repository.save(any())).thenReturn(sampleEmployee());
+        when(mapper.createEmployeeFromCreateRequest(any())).thenReturn(sampleEmployee());
+        when(mapper.createEmployeeResponse(any())).thenReturn(sampleEmployeeResponse());
+        EmployeeResponse actual = victim.saveEmployee(sampleCreateEmployeeRequest());
+        EmployeeResponse expected = sampleEmployeeResponse();
+        Assertions.assertEquals(actual, expected);
     }
 
-    private EmployeeDeleteResponse sampleEmployeeDeleteResponse() throws ParseException {
-        return new EmployeeDeleteResponse("Employee deleted successfully", sampleSimpleEmployeeResponse());
+    @Test
+    public void shouldThrowExceptionWhenTryingToSaveEmployeeWithExistingId() throws ParseException {
+        when(repository.getMaxId()).thenReturn(123);
+        assertThatThrownBy(() -> victim.saveEmployee(sampleCreateEmployeeRequest()))
+                .isInstanceOf(ItemAlreadyExistsException.class)
+                .hasMessage("Item with id 123 already exists");
     }
-
-    private EmployeeResponse sampleEmployeeResponse() throws ParseException {
-        return new EmployeeResponse(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01" ),
-                List.of(new DepartmentResponse("d001", "testDep1"), new DepartmentResponse("d002", "testDep2")),
-                List.of(new DepartmentResponse("d001", "testDep1")),
-                List.of(new SalaryResponse(12345, dateFormatter.parse("2001-01-01" ), dateFormatter.parse("2003-03-03" ))),
-                List.of(new TitleResponse("TestTitle", dateFormatter.parse("2001-01-01" ), dateFormatter.parse("2003-03-03" ))));
-    }
-
-    private List<Employee> sampleEmployeeList() throws ParseException {
-        return List.of(
-                new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
-                        sampleDepartmentList(),
-                        sampleManagedDepartmentList(),
-                        sampleSalaryList(),
-                        sampleTitleList()),
-                new Employee(321, dateFormatter.parse("1982-02-02"), "Name2", "LastName2", 'F', dateFormatter.parse("2002-02-02"),
-                        sampleDepartmentList(),
-                        sampleManagedDepartmentList(),
-                        sampleSalaryList(),
-                        sampleTitleList())
-        );
-    }
-
-    private List<Department> sampleDepartmentList() throws ParseException {
-        return List.of(
-                new Department("d001", "testDep1", sampleShortEmployeeList(), sampleShortEmployeeList()),
-                new Department("d002", "testDep2", sampleShortEmployeeList(), sampleShortEmployeeList()),
-                new Department("d003", "testDep3", sampleShortEmployeeList(), sampleShortEmployeeList())
-        );
-    }
-
-    private List<Department> sampleManagedDepartmentList() throws ParseException {
-        return List.of(
-                new Department("d001", "testDep1", sampleShortEmployeeList(), sampleShortEmployeeList()),
-                new Department("d002", "testDep2", sampleShortEmployeeList(), sampleShortEmployeeList())
-        );
-    }
-
-    private List<Salary> sampleSalaryList() throws ParseException {
-        return List.of(
-                new Salary(123, 12345, dateFormatter.parse("2001-01-01" ), dateFormatter.parse("2003-03-03" )),
-                new Salary(321, 54321, dateFormatter.parse("2004-04-04" ), dateFormatter.parse("2006-06-06" ))
-        );
-    }
-
-    private List<Title> sampleTitleList() throws ParseException {
-        return List.of(
-                new Title(123, "TestTitle1", dateFormatter.parse("2001-01-01" ), dateFormatter.parse("2003-03-03" )),
-                new Title(321, "TestTitle2", dateFormatter.parse("2004-04-04" ), dateFormatter.parse("2006-06-06" ))
-        );
-    }
-
-    private List<Employee> sampleShortEmployeeList() throws ParseException {
-        return List.of(
-                new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01") , null, null, null, null),
-                new Employee(234, dateFormatter.parse("1982-02-02"), "Name2", "LastName2", 'F', dateFormatter.parse("2002-02-02" ), null, null, null, null),
-                new Employee(345, dateFormatter.parse("1983-03-03"), "Name3", "LastName3", 'M', dateFormatter.parse("2003-03-03" ), null, null, null, null)
-        );
-    }
-
-
-    private List<SimpleEmployeeResponse> sampleSimpleEmployeeResponseList() throws ParseException {
-        return List.of(
-                new SimpleEmployeeResponse(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01" )),
-                new SimpleEmployeeResponse(321, dateFormatter.parse("1982-02-02"), "Name2", "LastName2", 'F', dateFormatter.parse("2002-02-02" ))
-        );
-    }
-
-    private SimpleEmployeeResponse sampleSimpleEmployeeResponse() throws ParseException {
-        return new SimpleEmployeeResponse(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01" ));
-    }
-
-
 }

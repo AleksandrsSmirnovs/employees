@@ -10,7 +10,7 @@ import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
-import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
+import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class EmployeeService {
     public EmployeeResponse getEmployeeById(Integer id) {
         Employee entity = employeeRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Employee with id " + id + " not found"));
-        return mapper.createResponseFromEmployeeEntity(entity);
+        return mapper.createEmployeeResponse(entity);
     }
 
     public List<SimpleEmployeeResponse> getAllEmployees(Integer pageNo, Integer pageSize, String[] sort, Character gender, String hireDateBefore, String hireDateAfter) {
@@ -61,7 +61,7 @@ public class EmployeeService {
         } else {
             throw new ItemAlreadyExistsException("Item with id " + request.getEmployeeNumber() + " already exists");
         }
-        return mapper.createResponseFromEmployeeEntity(employeeRepository.save(mapper.createEmployeeFromCreateRequest(request)));
+        return mapper.createEmployeeResponse(employeeRepository.save(mapper.createEmployeeFromCreateRequest(request)));
     }
 
 }

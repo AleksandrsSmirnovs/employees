@@ -83,4 +83,14 @@ public class Salary implements Serializable {
     public int hashCode() {
         return Objects.hash(employeeNumber, salary, fromDate, toDate);
     }
+
+    @Override
+    public String toString() {
+        return "Salary{" +
+                "employeeNumber=" + employeeNumber +
+                ", salary=" + salary +
+                ", fromDate=" + fromDate +
+                ", toDate=" + toDate +
+                '}';
+    }
 }

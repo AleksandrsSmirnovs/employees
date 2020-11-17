@@ -134,4 +134,20 @@ public class EmployeeResponse {
     public int hashCode() {
         return Objects.hash(employeeNumber, birthDate, firstName, lastName, gender, hireDate, departments, managedDepartments, salaries, titles);
     }
+
+    @Override
+    public String toString() {
+        return "EmployeeResponse{" +
+                "employeeNumber=" + employeeNumber +
+                ", birthDate=" + birthDate +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender=" + gender +
+                ", hireDate=" + hireDate +
+                ", departments=" + departments +
+                ", managedDepartments=" + managedDepartments +
+                ", salaries=" + salaries +
+                ", titles=" + titles +
+                '}';
+    }
 }

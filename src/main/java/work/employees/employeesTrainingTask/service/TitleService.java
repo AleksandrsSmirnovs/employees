@@ -10,7 +10,7 @@ import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
 import work.employees.employeesTrainingTask.repository.TitleRepository;
 import work.employees.employeesTrainingTask.response.*;
-import work.employees.employeesTrainingTask.response.responseMapper.ResponseMapper;
+import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
 import java.util.List;

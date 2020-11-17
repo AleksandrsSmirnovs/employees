@@ -1,4 +1,4 @@
-package work.employees.employeesTrainingTask.response.responseMapper;
+package work.employees.employeesTrainingTask.service.utils;
 
 import org.springframework.stereotype.Service;
 import work.employees.employeesTrainingTask.domain.Department;
@@ -28,7 +28,7 @@ public class ResponseMapper {
         );
     }
 
-    public EmployeeResponse createResponseFromEmployeeEntity(Employee entity) {
+    public EmployeeResponse createEmployeeResponse(Employee entity) {
         return new EmployeeResponse(entity.getEmployeeNumber(),
                 entity.getBirthDate(),
                 entity.getFirstName(),
@@ -53,8 +53,8 @@ public class ResponseMapper {
         return new TitleResponse(title.getTitle(), title.getFromDate(), title.getToDate());
     }
 
-    public DepartmentResponse createResponseFromDepartmentEntity(Department entity) {
-        return new DepartmentResponse(entity.getDepartmentNumber(), entity.getDepartmentName());
+    public DepartmentResponse createDepartmentResponse(Department department) {
+        return new DepartmentResponse(department.getDepartmentNumber(), department.getDepartmentName());
     }
 
 

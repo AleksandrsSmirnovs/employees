@@ -24,5 +24,4 @@ public interface EmployeeRepository extends PagingAndSortingRepository<Employee,
 
     @Query(value = "SELECT * FROM employees WHERE gender LIKE :gender AND hire_date < :hireDateBefore AND hire_date > :hireDateAfter", nativeQuery = true)
     List<Employee> findAllWithParams(@Param("gender") String gender, @Param("hireDateBefore") String hireDateBefore, @Param("hireDateAfter") String hireDateAfter, Pageable pageable);
-
 }

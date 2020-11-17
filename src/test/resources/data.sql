@@ -1,0 +1,17 @@
+INSERT INTO departments VALUES ('d001', 'TestDept1');
+INSERT INTO departments VALUES ('d002', 'TestDept2');
+INSERT INTO departments VALUES ('d003', 'TestDept3');
+INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES (111, '1981-01-01', 'Name1', 'LastName1', 'M', '2001-01-01');
+INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES (222, '1982-02-02', 'Name2', 'LastName2', 'F', '2002-02-02');
+INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date) VALUES (333, '1983-03-03', 'Name3', 'LastName3', 'M', '2003-03-03');
+INSERT INTO titles (emp_no, title, from_date, to_date) VALUES (111, 'Title1', '2001-02-03', '2004-05-06');
+INSERT INTO titles (emp_no, title, from_date, to_date) VALUES (222, 'Title3', '2001-02-03', '2023-06-07');
+INSERT INTO titles (emp_no, title, from_date, to_date) VALUES (333, 'Title3', '2001-02-03', '2025-06-07');
+INSERT INTO salaries (emp_no, salary, from_date, to_date) VALUES (111, 12345, '2001-02-03', '2004-05-06');
+INSERT INTO salaries (emp_no, salary, from_date, to_date) VALUES (111, 23456, '2004-05-06', '2011-05-06');
+INSERT INTO salaries (emp_no, salary, from_date, to_date) VALUES (222, 34567, '2001-02-03', '2009-09-09');
+INSERT INTO salaries (emp_no, salary, from_date, to_date) VALUES (333, 45678, '2001-02-03', '2004-05-06');
+INSERT INTO dept_emp (emp_no, dept_no, from_date, to_date) VALUES (111, 'd001', '2001-02-03', '2004-05-06');
+INSERT INTO dept_emp (emp_no, dept_no, from_date, to_date) VALUES (222, 'd002', '2005-05-05', '2006-06-06');
+INSERT INTO dept_emp (emp_no, dept_no, from_date, to_date) VALUES (333, 'd003', '2004-05-06', '2009-09-09');
+INSERT INTO dept_manager (emp_no, dept_no, from_date, to_date) VALUES (111, 'd001', '2001-02-03', '2004-05-06');

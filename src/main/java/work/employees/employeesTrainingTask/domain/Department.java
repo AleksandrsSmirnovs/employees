@@ -34,6 +34,11 @@ public class Department {
     public Department() {
     }
 
+    public Department(String departmentNumber, String departmentName) {
+        this.departmentNumber = departmentNumber;
+        this.departmentName = departmentName;
+    }
+
     public Department(String departmentNumber, String departmentName, List<Employee> employees, List<Employee> departmentManagers) {
         this.departmentNumber = departmentNumber;
         this.departmentName = departmentName;
@@ -87,5 +92,13 @@ public class Department {
     @Override
     public int hashCode() {
         return Objects.hash(departmentNumber, departmentName, employees, departmentManagers);
+    }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "departmentNumber='" + departmentNumber + '\'' +
+                ", departmentName='" + departmentName + '\'' +
+                '}';
     }
 }
