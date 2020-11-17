@@ -1,4 +1,4 @@
-package work.employees.employeesTrainingTask.domain;
+package work.employees.employeesTrainingTask.domain.embeddableId;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

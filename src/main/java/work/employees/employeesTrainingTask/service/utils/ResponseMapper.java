@@ -15,7 +15,7 @@ import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 public class ResponseMapper {
 
     public TitleResponse createTitleResponse(Title title) {
-        return new TitleResponse(title.getTitle());
+        return new TitleResponse(title.getTitleId().getTitle());
     }
 
     public SimpleEmployeeResponse createSimpleEmployeeResponse(Employee entity) {
@@ -46,11 +46,11 @@ public class ResponseMapper {
     }
 
     public SalaryResponse createSalaryResponseForEmployee(Salary salary) {
-        return new SalaryResponse(salary.getSalary(), salary.getFromDate(), salary.getToDate());
+        return new SalaryResponse(salary.getSalary(), salary.getSalaryId().getFromDate(), salary.getToDate());
     }
 
     public TitleResponse createTitleResponseForEmployee(Title title) {
-        return new TitleResponse(title.getTitle(), title.getFromDate(), title.getToDate());
+        return new TitleResponse(title.getTitleId().getTitle(), title.getTitleId().getFromDate(), title.getToDate());
     }
 
     public DepartmentResponse createDepartmentResponse(Department department) {

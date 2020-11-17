@@ -1,5 +1,7 @@
 package work.employees.employeesTrainingTask.domain;
 
+import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,39 +11,30 @@ import java.util.Objects;
 @Table(name = "salaries")
 public class Salary implements Serializable {
 
-    @Id
-    @Column(name = "emp_no")
-    private Integer employeeNumber;
+    @EmbeddedId
+    private SalaryId salaryId;
 
-    @Id
     @Column(name = "salary")
     private Integer salary;
-
-    @Column(name = "from_date")
-    private Date fromDate;
 
     @Column(name = "to_date")
     private Date toDate;
 
-//    @ManyToOne
-//    private Employee employee;
-
     public Salary() {
     }
 
-    public Salary(Integer employeeNumber, Integer salary, Date fromDate, Date toDate) {
-        this.employeeNumber = employeeNumber;
+    public Salary(SalaryId salaryId, Integer salary, Date toDate) {
+        this.salaryId = salaryId;
         this.salary = salary;
-        this.fromDate = fromDate;
         this.toDate = toDate;
     }
 
-    public Integer getEmployeeNumber() {
-        return employeeNumber;
+    public SalaryId getSalaryId() {
+        return salaryId;
     }
 
-    public void setEmployeeNumber(Integer employeeNumber) {
-        this.employeeNumber = employeeNumber;
+    public void setSalaryId(SalaryId salaryId) {
+        this.salaryId = salaryId;
     }
 
     public Integer getSalary() {
@@ -50,14 +43,6 @@ public class Salary implements Serializable {
 
     public void setSalary(Integer salary) {
         this.salary = salary;
-    }
-
-    public Date getFromDate() {
-        return fromDate;
-    }
-
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
     }
 
     public Date getToDate() {
@@ -73,23 +58,21 @@ public class Salary implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Salary salary1 = (Salary) o;
-        return Objects.equals(employeeNumber, salary1.employeeNumber) &&
+        return Objects.equals(salaryId, salary1.salaryId) &&
                 Objects.equals(salary, salary1.salary) &&
-                Objects.equals(fromDate, salary1.fromDate) &&
                 Objects.equals(toDate, salary1.toDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(employeeNumber, salary, fromDate, toDate);
+        return Objects.hash(salaryId, salary, toDate);
     }
 
     @Override
     public String toString() {
         return "Salary{" +
-                "employeeNumber=" + employeeNumber +
+                "salaryId=" + salaryId +
                 ", salary=" + salary +
-                ", fromDate=" + fromDate +
                 ", toDate=" + toDate +
                 '}';
     }

@@ -2,14 +2,11 @@ package work.employees.employeesTrainingTask.service.utils;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.Employee;
-import work.employees.employeesTrainingTask.domain.Salary;
-import work.employees.employeesTrainingTask.domain.Title;
+import work.employees.employeesTrainingTask.domain.*;
+import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
+import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
 import work.employees.employeesTrainingTask.response.*;
 
 import java.text.ParseException;
@@ -51,8 +48,8 @@ public class ResponseMapperTest {
         EmployeeResponse actual = victim.createEmployeeResponse(new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
                 List.of(new Department("d001", "testDep1"), new Department("d002", "testDep2")),
                 List.of(new Department("d001", "testDep1")),
-                List.of(new Salary(123, 12345, dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"))),
-                List.of(new Title(123, "TestTitle", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")))));
+                List.of(new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345,  dateFormatter.parse("2003-03-03"))),
+                List.of(new Title(new TitleId(123, "TestTitle", dateFormatter.parse("2001-01-01")),  dateFormatter.parse("2003-03-03")))));
         assertEquals(actual, expected);
     }
 

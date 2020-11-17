@@ -13,7 +13,6 @@ import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,10 +34,8 @@ public class DepartmentService {
     }
 
     public List<DepartmentResponse> getAllDepartments(String order) {
-        List<Department> entityList = (List<Department>) departmentRepository.findAll();
-        return order.equalsIgnoreCase("desc") ?
-                entityList.stream().sorted(Comparator.comparing(Department::getDepartmentName).reversed()).map(mapper::createDepartmentResponse).collect(toList()) :
-                entityList.stream().sorted(Comparator.comparing(Department::getDepartmentName)).map(mapper::createDepartmentResponse).collect(toList());
+        List<Department> entityList = order.equalsIgnoreCase("desc") ? (List<Department>) departmentRepository.findAllByOrderByDepartmentNameDesc() : (List<Department>) departmentRepository.findAllByOrderByDepartmentNameAsc();
+        return entityList.stream().map(mapper::createDepartmentResponse).collect(toList());
     }
 
     public List<SimpleEmployeeResponse> getEmployeesByDepartmentName(String departmentName, Integer pageNo, Integer pageSize, String[] sort, Character gender, String hireDateBefore, String hireDateAfter) {

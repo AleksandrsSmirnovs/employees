@@ -1,5 +1,7 @@
 package work.employees.employeesTrainingTask.domain;
 
+import work.employees.employeesTrainingTask.domain.embeddableId.DepartmentManagerId;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;

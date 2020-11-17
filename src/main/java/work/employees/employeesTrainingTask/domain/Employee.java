@@ -44,10 +44,10 @@ public class Employee {
     )
     private List<Department> managedDepartments;
 
-    @OneToMany(mappedBy = "employeeNumber")
+    @OneToMany(mappedBy = "salaryId.employeeNumber")
     private List<Salary> salaries;
 
-    @OneToMany(mappedBy = "employeeNumber")
+    @OneToMany(mappedBy = "titleId.employeeNumber")
     private List<Title> titles;
 
     public Employee() {

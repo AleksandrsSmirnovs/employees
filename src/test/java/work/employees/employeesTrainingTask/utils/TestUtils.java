@@ -3,10 +3,9 @@ package work.employees.employeesTrainingTask.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
-import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.Employee;
-import work.employees.employeesTrainingTask.domain.Salary;
-import work.employees.employeesTrainingTask.domain.Title;
+import work.employees.employeesTrainingTask.domain.*;
+import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
+import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
 
@@ -70,6 +69,14 @@ public class TestUtils {
         );
     }
 
+    public static List<Department> sampleDepartmentListReversed() throws ParseException {
+        return List.of(
+                new Department("d003", "testDep3", sampleShortEmployeeList(), sampleShortEmployeeList()),
+                new Department("d002", "testDep2", sampleShortEmployeeList(), sampleShortEmployeeList()),
+                new Department("d001", "testDep1", sampleShortEmployeeList(), sampleShortEmployeeList())
+        );
+    }
+
     public static Department sampleDepartment() throws ParseException {
         return new Department("d001", "testDep1", sampleShortEmployeeList(), sampleShortEmployeeList());
     }
@@ -83,13 +90,13 @@ public class TestUtils {
 
     public static List<Salary> sampleSalaryList() throws ParseException {
         return List.of(
-                new Salary(123, 12345, dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
-                new Salary(321, 54321, dateFormatter.parse("2004-04-04"), dateFormatter.parse("2006-06-06"))
+                new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03")),
+                new Salary(new SalaryId(321, dateFormatter.parse("2004-04-04")), 54321, dateFormatter.parse("2006-06-06"))
         );
     }
 
     public static Salary sampleSalary() throws ParseException {
-        return new Salary(123, 12345, dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"));
+        return new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03"));
     }
 
     public static SalaryResponse sampleSalaryResponse() throws ParseException {
@@ -98,13 +105,13 @@ public class TestUtils {
 
     public static List<Title> sampleTitleList() throws ParseException {
         return List.of(
-                new Title(123, "TestTitle1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
-                new Title(321, "TestTitle2", dateFormatter.parse("2004-04-04"), dateFormatter.parse("2006-06-06"))
+                new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
+                new Title(new TitleId(321, "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06"))
         );
     }
 
     public static Title sampleTitle() throws ParseException {
-        return new Title(123, "TestTitle1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"));
+        return new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03"));
     }
 
     public static List<Employee> sampleShortEmployeeList() throws ParseException {

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import work.employees.employeesTrainingTask.domain.Department;
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.DepartmentRepository;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
@@ -17,8 +18,12 @@ import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.util.Collections.reverseOrder;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,14 +54,31 @@ public class DepartmentServiceTest {
 
     @Test
     public void shouldFindAllDepartments() throws ParseException {
-        when(departmentRepository.findAll()).thenReturn(sampleDepartmentList());
-        when(mapper.createDepartmentResponse(any())).thenReturn(sampleDepartmentResponse());
+        when(departmentRepository.findAllByOrderByDepartmentNameAsc()).thenReturn(sampleDepartmentList());
+        when(mapper.createDepartmentResponse(new Department("d001", "testDep1", sampleShortEmployeeList(), sampleShortEmployeeList()))).thenReturn(new DepartmentResponse("d001", "testDep1"));
+        when(mapper.createDepartmentResponse(new Department("d002", "testDep2", sampleShortEmployeeList(), sampleShortEmployeeList()))).thenReturn(new DepartmentResponse("d002", "testDep2"));
+        when(mapper.createDepartmentResponse(new Department("d003", "testDep3", sampleShortEmployeeList(), sampleShortEmployeeList()))).thenReturn(new DepartmentResponse("d003", "testDep3"));
         List<DepartmentResponse> expected = List.of(
                 new DepartmentResponse("d001", "testDep1"),
-                new DepartmentResponse("d001", "testDep1"),
-                new DepartmentResponse("d001", "testDep1")
+                new DepartmentResponse("d002", "testDep2"),
+                new DepartmentResponse("d003", "testDep3")
         );
         List<DepartmentResponse> actual = victim.getAllDepartments("");
+        Assertions.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void shouldFindAllDepartmentsDesc() throws ParseException {        ;
+        when(departmentRepository.findAllByOrderByDepartmentNameDesc()).thenReturn(sampleDepartmentListReversed());
+        when(mapper.createDepartmentResponse(new Department("d001", "testDep1", sampleShortEmployeeList(), sampleShortEmployeeList()))).thenReturn(new DepartmentResponse("d001", "testDep1"));
+        when(mapper.createDepartmentResponse(new Department("d002", "testDep2", sampleShortEmployeeList(), sampleShortEmployeeList()))).thenReturn(new DepartmentResponse("d002", "testDep2"));
+        when(mapper.createDepartmentResponse(new Department("d003", "testDep3", sampleShortEmployeeList(), sampleShortEmployeeList()))).thenReturn(new DepartmentResponse("d003", "testDep3"));
+        List<DepartmentResponse> expected = List.of(
+                new DepartmentResponse("d003", "testDep3"),
+                new DepartmentResponse("d002", "testDep2"),
+                new DepartmentResponse("d001", "testDep1")
+        );
+        List<DepartmentResponse> actual = victim.getAllDepartments("desc");
         Assertions.assertEquals(actual, expected);
     }
 
