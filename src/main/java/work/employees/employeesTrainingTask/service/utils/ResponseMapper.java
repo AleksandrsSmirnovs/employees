@@ -108,10 +108,9 @@ public class ResponseMapper {
 //                employee,
 //                new Department(createEmployeeDepartmentRequest.getDepartmentNumber(), createEmployeeDepartmentRequest.getDepartmentName())))
 //                .collect(toList()));
-        employee.setSalaries(request.getSalaries());
-        employee.setTitles(request.getTitles());
         return employee;
     }
+
 
     public DepartmentEmployee createDepartmentEmployeeRelationship(Employee employee, Department department, Date dateFrom, Date dateTo) {
         return new DepartmentEmployee(dateFrom, dateTo, employee, department);

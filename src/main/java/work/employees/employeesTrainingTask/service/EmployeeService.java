@@ -4,10 +4,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.DepartmentEmployee;
-import work.employees.employeesTrainingTask.domain.DepartmentManager;
-import work.employees.employeesTrainingTask.domain.Employee;
+import work.employees.employeesTrainingTask.domain.*;
+import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
+import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
 import work.employees.employeesTrainingTask.exception.ItemAlreadyExistsException;
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.DepartmentRepository;
@@ -21,6 +20,7 @@ import work.employees.employeesTrainingTask.service.utils.DataSorter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,13 +28,11 @@ import static java.util.stream.Collectors.toList;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
     private final ResponseMapper mapper;
     private final DataSorter sorter;
 
-    public EmployeeService(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, ResponseMapper mapper, DataSorter sorter) {
+    public EmployeeService(EmployeeRepository employeeRepository, ResponseMapper mapper, DataSorter sorter) {
         this.employeeRepository = employeeRepository;
-        this.departmentRepository = departmentRepository;
         this.mapper = mapper;
         this.sorter = sorter;
     }
@@ -64,29 +62,41 @@ public class EmployeeService {
     }
 
     public EmployeeResponse saveEmployee(CreateEmployeeRequest request) {
-        if (request.getEmployeeNumber() == null || employeeRepository.existsById(request.getEmployeeNumber())) {
+        if (request.getEmployeeNumber() == null || request.getEmployeeNumber() > employeeRepository.getMaxId()) {
             request.setEmployeeNumber(employeeRepository.getMaxId() + 1);
         } else {
             throw new ItemAlreadyExistsException("Item with id " + request.getEmployeeNumber() + " already exists");
         }
         Employee employee = mapper.createEmployeeFromCreateRequest(request);
-//        employee.setDepartments(new ArrayList<>());
-//        if (request.getDepartments() != null) {
-//            for (CreateEmployeeDepartmentRequest createEmployeeDepartmentRequest : request.getDepartments()) {
-//                Department department = departmentRepository.findById(createEmployeeDepartmentRequest.getDepartmentNumber())
-//                        .orElse(new Department(createEmployeeDepartmentRequest.getDepartmentNumber(), createEmployeeDepartmentRequest.getDepartmentName()));
-//                DepartmentEmployee departmentEmployee = mapper.createDepartmentEmployeeRelationship(
-//                        employee,
-//                        department,
-//                        createEmployeeDepartmentRequest.getFromDate(),
-//                        createEmployeeDepartmentRequest.getToDate()
-//                );
-//                employee.getDepartments().add(departmentEmployee);
-//            }
-////        }
-//        employee.setSalaries(request.getSalaries());
-        employeeRepository.save(employee);
-        return mapper.createEmployeeResponse(employee);
+        employee.setDepartments(request.getDepartments().stream()
+                .map(createEmployeeDepartmentRequest ->
+                        new DepartmentEmployee(
+                                createEmployeeDepartmentRequest.getDepartmentNumber(),
+                                employee.getEmployeeNumber(),
+                                createEmployeeDepartmentRequest.getFromDate(),
+                                createEmployeeDepartmentRequest.getToDate()))
+                .collect(toList()));
+        employee.setManagedDepartments(request.getDepartments().stream()
+                .map(createEmployeeDepartmentRequest ->
+                        new DepartmentManager(
+                                createEmployeeDepartmentRequest.getDepartmentNumber(),
+                                employee.getEmployeeNumber(),
+                                createEmployeeDepartmentRequest.getFromDate(),
+                                createEmployeeDepartmentRequest.getToDate()))
+                .collect(toList()));
+        employee.setSalaries(request.getSalaries().stream()
+                .map(createEmployeeSalaryRequest ->
+                        new Salary(
+                                new SalaryId(employee.getEmployeeNumber(), createEmployeeSalaryRequest.getFromDate()),
+                                createEmployeeSalaryRequest.getSalary(),
+                                createEmployeeSalaryRequest.getToDate()))
+                .collect(toList()));
+        employee.setTitles(request.getTitles().stream()
+                .map(createEmployeeTitleRequest -> new Title(
+                        new TitleId(employee.getEmployeeNumber(), createEmployeeTitleRequest.getTitle(), createEmployeeTitleRequest.getFromDate()),
+                        createEmployeeTitleRequest.getToDate()
+                ))
+                .collect(toList()));
+        return mapper.createEmployeeResponse(employeeRepository.save(employee));
     }
-
 }

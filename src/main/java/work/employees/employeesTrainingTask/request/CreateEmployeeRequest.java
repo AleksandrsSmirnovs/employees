@@ -31,14 +31,14 @@ public class CreateEmployeeRequest {
 
     private List<CreateEmployeeDepartmentRequest> managedDepartments;
 
-    private List<Salary> salaries;
+    private List<CreateEmployeeSalaryRequest> salaries;
 
-    private List<Title> titles;
+    private List<CreateEmployeeTitleRequest> titles;
 
     public CreateEmployeeRequest() {
     }
 
-    public CreateEmployeeRequest(Integer employeeNumber, @NotNull Date birthDate, @NotEmpty String firstName, @NotEmpty String lastName, @NotNull Character gender, @NotNull Date hireDate, List<CreateEmployeeDepartmentRequest> departments, List<CreateEmployeeDepartmentRequest> managedDepartments, List<Salary> salaries, List<Title> titles) {
+    public CreateEmployeeRequest(Integer employeeNumber, @NotNull Date birthDate, @NotEmpty String firstName, @NotEmpty String lastName, @NotNull Character gender, @NotNull Date hireDate, List<CreateEmployeeDepartmentRequest> departments, List<CreateEmployeeDepartmentRequest> managedDepartments, List<CreateEmployeeSalaryRequest> salaries, List<CreateEmployeeTitleRequest> titles) {
         this.employeeNumber = employeeNumber;
         this.birthDate = birthDate;
         this.firstName = firstName;
@@ -115,19 +115,19 @@ public class CreateEmployeeRequest {
         this.managedDepartments = managedDepartments;
     }
 
-    public List<Salary> getSalaries() {
+    public List<CreateEmployeeSalaryRequest> getSalaries() {
         return salaries;
     }
 
-    public void setSalaries(List<Salary> salaries) {
+    public void setSalaries(List<CreateEmployeeSalaryRequest> salaries) {
         this.salaries = salaries;
     }
 
-    public List<Title> getTitles() {
+    public List<CreateEmployeeTitleRequest> getTitles() {
         return titles;
     }
 
-    public void setTitles(List<Title> titles) {
+    public void setTitles(List<CreateEmployeeTitleRequest> titles) {
         this.titles = titles;
     }
 

@@ -65,28 +65,28 @@ public class ResponseMapperTest {
         assertEquals(actual, expected);
     }
 
-    @Test
-    public void shouldCreateEmployeeFromCreateRequest() throws ParseException {
-        Employee expected = new Employee(
-                123,
-                dateFormatter.parse("1981-01-01"),
-                "Name1",
-                "LastName1",
-                'M',
-                dateFormatter.parse("2001-01-01"),
-                null,
-                null,
-                List.of(
-                        new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03")),
-                        new Salary(new SalaryId(321, dateFormatter.parse("2004-04-04")), 54321, dateFormatter.parse("2006-06-06"))
-                ),
-                List.of(
-                        new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
-                        new Title(new TitleId(321, "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06"))
-                ));
-        Employee actual = victim.createEmployeeFromCreateRequest(sampleCreateEmployeeRequest());
-        assertEquals(expected, actual);
-    }
+//    @Test
+//    public void shouldCreateEmployeeFromCreateRequest() throws ParseException {
+//        Employee expected = new Employee(
+//                123,
+//                dateFormatter.parse("1981-01-01"),
+//                "Name1",
+//                "LastName1",
+//                'M',
+//                dateFormatter.parse("2001-01-01"),
+//                null,
+//                null,
+//                List.of(
+//                        new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03")),
+//                        new Salary(new SalaryId(321, dateFormatter.parse("2004-04-04")), 54321, dateFormatter.parse("2006-06-06"))
+//                ),
+//                List.of(
+//                        new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
+//                        new Title(new TitleId(321, "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06"))
+//                ));
+//        Employee actual = victim.createEmployeeFromCreateRequest(sampleCreateEmployeeRequest());
+//        assertEquals(expected, actual);
+//    }
 
     @Test
     public void shouldCreateEmployeeDeleteResponse() throws ParseException {
