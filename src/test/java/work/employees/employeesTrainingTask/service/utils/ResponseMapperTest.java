@@ -7,6 +7,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import work.employees.employeesTrainingTask.domain.*;
 import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
 import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
+import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
 
 import java.text.ParseException;
@@ -42,24 +43,6 @@ public class ResponseMapperTest {
         assertEquals(actual, expected);
     }
 
-//    @Test
-//    public void shouldCreateEmployeeResponseFromEmployeeEntity() throws ParseException {
-//        EmployeeResponse expected = sampleEmployeeResponse();
-//        EmployeeResponse actual = victim.createEmployeeResponse(new Employee(123,
-//                dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
-//
-//                ));
-//        System.out.println(expected);
-//        assertEquals(actual, expected);
-//    }
-//
-//    @Test
-//    public void shouldCreateDepartmentResponseForEmployee() throws ParseException {
-//        List<DepartmentResponse> expected = sampleDepartmentResponseList();
-//        List<DepartmentResponse> actual = victim.createDepartmentResponseListForEmployee(sampleEmployee().getDepartments());
-//        assertEquals(actual, expected);
-//    }
-
     @Test
     public void shouldCreateSalaryResponseForEmployee() throws ParseException {
         SalaryResponse expected = sampleSalaryResponse();
@@ -81,6 +64,45 @@ public class ResponseMapperTest {
         assertEquals(actual, expected);
     }
 
+    @Test
+    public void shouldCreateEmployeeFromCreateRequest() throws ParseException {
+        Employee expected = new Employee(
+                123,
+                dateFormatter.parse("1981-01-01"),
+                "Name1",
+                "LastName1",
+                'M',
+                dateFormatter.parse("2001-01-01"),
+                null,
+                null,
+                List.of(
+                        new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03")),
+                        new Salary(new SalaryId(321, dateFormatter.parse("2004-04-04")), 54321, dateFormatter.parse("2006-06-06"))
+                ),
+                List.of(
+                        new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
+                        new Title(new TitleId(321, "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06"))
+                ));
+        Employee actual = victim.createEmployeeFromCreateRequest(sampleCreateEmployeeRequest());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldCreateEmployeeDeleteResponse() throws ParseException {
+        EmployeeDeleteResponse expected = new EmployeeDeleteResponse(
+                "message",
+                new SimpleEmployeeResponse(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"))
+        );
+        EmployeeDeleteResponse actual = victim.createEmployeeDeleteResponse("message", sampleEmployee());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldCreateSimpleDepartmentResponse() {
+        SimpleDepartmentResponse expected = new SimpleDepartmentResponse("d001", "testDep1");
+        SimpleDepartmentResponse actual = victim.createSimpleDepartmentResponse(new Department("d001", "testDep1", null, null));
+        assertEquals(expected, actual);
+    }
 
 
 

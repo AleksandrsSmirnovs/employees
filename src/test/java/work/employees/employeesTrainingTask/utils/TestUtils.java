@@ -76,13 +76,6 @@ public class TestUtils {
                 new Title(new TitleId(321, "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06"))
         );
     }
-//
-//    public static List<DepartmentEmployee> sampleDepartmentEmployeeList() {
-//        return List.of(
-//                new DepartmentEmployee()
-//        );
-//    }
-
 
     //Responses
     public static EmployeeResponse sampleEmployeeResponse() throws ParseException {
@@ -125,13 +118,6 @@ public class TestUtils {
                 new DepartmentResponse("d002", "testDep2", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
                 );
     }
-
-//    public static List<SimpleDepartmentResponse> sampleSimpleDepartmentResponseList() {
-//        return List.of(
-//                new SimpleDepartmentResponse("d001", "testDep1"),
-//                new SimpleDepartmentResponse("d002", "testDep2")
-//        );
-//    }
 
     public static List<SalaryResponse> sampleSalaryResponseList() throws ParseException {
         return List.of(
