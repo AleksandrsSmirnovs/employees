@@ -28,16 +28,16 @@ public class Employee {
     @Column(name = "hire_date")
     private Date hireDate;
 
-    @OneToMany(mappedBy = "departmentEmployeeId.employeeNumber")
+    @OneToMany(mappedBy = "departmentEmployeeId.employeeNumber", cascade = CascadeType.ALL)
     private List<DepartmentEmployee> departments;
 
-    @OneToMany(mappedBy = "departmentManagerId.employeeNumber")
+    @OneToMany(mappedBy = "departmentManagerId.employeeNumber", cascade = CascadeType.ALL)
     private List<DepartmentManager> managedDepartments;
 
-    @OneToMany(mappedBy = "salaryId.employeeNumber")
+    @OneToMany(mappedBy = "salaryId.employeeNumber", cascade = CascadeType.ALL)
     private List<Salary> salaries;
 
-    @OneToMany(mappedBy = "titleId.employeeNumber")
+    @OneToMany(mappedBy = "titleId.employeeNumber", cascade = CascadeType.ALL)
     private List<Title> titles;
 
     public Employee() {

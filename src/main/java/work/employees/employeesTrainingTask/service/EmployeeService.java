@@ -11,16 +11,13 @@ import work.employees.employeesTrainingTask.exception.ItemAlreadyExistsException
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.DepartmentRepository;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
-import work.employees.employeesTrainingTask.request.CreateEmployeeDepartmentRequest;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
 import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,11 +25,13 @@ import static java.util.stream.Collectors.toList;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
     private final ResponseMapper mapper;
     private final DataSorter sorter;
 
-    public EmployeeService(EmployeeRepository employeeRepository, ResponseMapper mapper, DataSorter sorter) {
+    public EmployeeService(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, ResponseMapper mapper, DataSorter sorter) {
         this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;
         this.mapper = mapper;
         this.sorter = sorter;
     }
@@ -68,21 +67,31 @@ public class EmployeeService {
             throw new ItemAlreadyExistsException("Item with id " + request.getEmployeeNumber() + " already exists");
         }
         Employee employee = mapper.createEmployeeFromCreateRequest(request);
+//        employee.setDepartments(request.getDepartments().stream()
+//                .map(createEmployeeDepartmentRequest ->
+//                        new DepartmentEmployee(
+//                                createEmployeeDepartmentRequest.getDepartmentNumber(),
+//                                employee.getEmployeeNumber(),
+//                                createEmployeeDepartmentRequest.getFromDate(),
+//                                createEmployeeDepartmentRequest.getToDate()))
+//                .collect(toList()));
         employee.setDepartments(request.getDepartments().stream()
                 .map(createEmployeeDepartmentRequest ->
                         new DepartmentEmployee(
-                                createEmployeeDepartmentRequest.getDepartmentNumber(),
-                                employee.getEmployeeNumber(),
                                 createEmployeeDepartmentRequest.getFromDate(),
-                                createEmployeeDepartmentRequest.getToDate()))
+                                createEmployeeDepartmentRequest.getToDate(),
+                                employee,
+                                departmentRepository.findById(createEmployeeDepartmentRequest.getDepartmentNumber()).orElse(new Department())
+                        ))
                 .collect(toList()));
         employee.setManagedDepartments(request.getDepartments().stream()
                 .map(createEmployeeDepartmentRequest ->
                         new DepartmentManager(
-                                createEmployeeDepartmentRequest.getDepartmentNumber(),
-                                employee.getEmployeeNumber(),
                                 createEmployeeDepartmentRequest.getFromDate(),
-                                createEmployeeDepartmentRequest.getToDate()))
+                                createEmployeeDepartmentRequest.getToDate(),
+                                employee,
+                                departmentRepository.findById(createEmployeeDepartmentRequest.getDepartmentNumber()).orElse(new Department())
+                        ))
                 .collect(toList()));
         employee.setSalaries(request.getSalaries().stream()
                 .map(createEmployeeSalaryRequest ->
@@ -97,6 +106,9 @@ public class EmployeeService {
                         createEmployeeTitleRequest.getToDate()
                 ))
                 .collect(toList()));
+       System.out.println(mapper.createDepartmentResponseListForEmployee(employee.getDepartments()));
+       System.out.println(mapper.createDepartmentManagerResponseListForEmployee(employee.getManagedDepartments()));
+
         return mapper.createEmployeeResponse(employeeRepository.save(employee));
     }
 }

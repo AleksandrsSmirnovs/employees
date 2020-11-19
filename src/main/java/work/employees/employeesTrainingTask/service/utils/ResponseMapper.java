@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
@@ -38,8 +39,8 @@ public class ResponseMapper {
                 employee.getLastName(),
                 employee.getGender(),
                 employee.getHireDate(),
-                employee.getDepartments() == null ? Collections.emptyList() : createDepartmentResponseListForEmployee(employee.getDepartments()),
-                employee.getManagedDepartments() == null ? Collections.emptyList() : createDepartmentManagerResponseListForEmployee(employee.getManagedDepartments()),
+                employee.getDepartments() == null ? emptyList() : createDepartmentResponseListForEmployee(employee.getDepartments()),
+                employee.getManagedDepartments() == null ? emptyList() : createDepartmentManagerResponseListForEmployee(employee.getManagedDepartments()),
                 emptyIfNull(employee.getSalaries()).stream().map(this::createSalaryResponseForEmployee).collect(toList()),
                 emptyIfNull(employee.getTitles()).stream().map(this::createTitleResponseForEmployee).collect(toList()));
     }
