@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import work.employees.employeesTrainingTask.response.DepartmentResponse;
+import work.employees.employeesTrainingTask.response.SimpleDepartmentResponse;
 import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.service.DepartmentService;
 
@@ -21,7 +22,7 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public List<DepartmentResponse> getAllDepartments(@RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+    public List<SimpleDepartmentResponse> getAllDepartments(@RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
         log.info("Received request - get all departments");
         return departmentService.getAllDepartments(order);
     }

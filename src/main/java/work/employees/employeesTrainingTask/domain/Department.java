@@ -1,5 +1,7 @@
 package work.employees.employeesTrainingTask.domain;
 
+import work.employees.employeesTrainingTask.domain.embeddableId.DepartmentEmployeeId;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -15,21 +17,11 @@ public class Department {
     @Column(name = "dept_name")
     private String departmentName;
 
-    @OneToMany
-    @JoinTable(
-            name = "dept_emp",
-            joinColumns = @JoinColumn(name = "dept_no"),
-            inverseJoinColumns = @JoinColumn(name = "emp_no")
-    )
-    List<Employee> employees;
+    @OneToMany(mappedBy = "departmentEmployeeId.departmentNumber")
+    List<DepartmentEmployee> employees;
 
-    @OneToMany
-    @JoinTable(
-            name = "dept_manager",
-            joinColumns = @JoinColumn(name = "dept_no"),
-            inverseJoinColumns = @JoinColumn(name = "emp_no")
-    )
-    List<Employee> departmentManagers;
+    @OneToMany(mappedBy = "departmentManagerId.departmentNumber")
+    List<DepartmentManager> departmentManagers;
 
     public Department() {
     }
@@ -39,7 +31,7 @@ public class Department {
         this.departmentName = departmentName;
     }
 
-    public Department(String departmentNumber, String departmentName, List<Employee> employees, List<Employee> departmentManagers) {
+    public Department(String departmentNumber, String departmentName, List<DepartmentEmployee> employees, List<DepartmentManager> departmentManagers) {
         this.departmentNumber = departmentNumber;
         this.departmentName = departmentName;
         this.employees = employees;
@@ -62,19 +54,19 @@ public class Department {
         this.departmentName = departmentName;
     }
 
-    public List<Employee> getEmployees() {
+    public List<DepartmentEmployee> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(List<Employee> employees) {
+    public void setEmployees(List<DepartmentEmployee> employees) {
         this.employees = employees;
     }
 
-    public List<Employee> getDepartmentManagers() {
+    public List<DepartmentManager> getDepartmentManagers() {
         return departmentManagers;
     }
 
-    public void setDepartmentManagers(List<Employee> departmentManagers) {
+    public void setDepartmentManagers(List<DepartmentManager> departmentManagers) {
         this.departmentManagers = departmentManagers;
     }
 
@@ -99,6 +91,8 @@ public class Department {
         return "Department{" +
                 "departmentNumber='" + departmentNumber + '\'' +
                 ", departmentName='" + departmentName + '\'' +
+                ", employees=" + employees +
+                ", departmentManagers=" + departmentManagers +
                 '}';
     }
 }

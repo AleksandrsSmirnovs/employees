@@ -9,6 +9,7 @@ import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.DepartmentRepository;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
 import work.employees.employeesTrainingTask.response.DepartmentResponse;
+import work.employees.employeesTrainingTask.response.SimpleDepartmentResponse;
 import work.employees.employeesTrainingTask.response.SimpleEmployeeResponse;
 import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 import work.employees.employeesTrainingTask.service.utils.DataSorter;
@@ -33,9 +34,9 @@ public class DepartmentService {
         this.sorter = sorter;
     }
 
-    public List<DepartmentResponse> getAllDepartments(String order) {
+    public List<SimpleDepartmentResponse> getAllDepartments(String order) {
         List<Department> entityList = order.equalsIgnoreCase("desc") ? (List<Department>) departmentRepository.findAllByOrderByDepartmentNameDesc() : (List<Department>) departmentRepository.findAllByOrderByDepartmentNameAsc();
-        return entityList.stream().map(mapper::createDepartmentResponse).collect(toList());
+        return entityList.stream().map(mapper::createSimpleDepartmentResponse).collect(toList());
     }
 
     public List<SimpleEmployeeResponse> getEmployeesByDepartmentName(String departmentName, Integer pageNo, Integer pageSize, String[] sort, Character gender, String hireDateBefore, String hireDateAfter) {

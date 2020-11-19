@@ -19,8 +19,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static work.employees.employeesTrainingTask.utils.TestUtils.sampleDepartmentResponseList;
-import static work.employees.employeesTrainingTask.utils.TestUtils.sampleSimpleEmployeeResponseList;
+import static work.employees.employeesTrainingTask.utils.TestUtils.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,7 +34,7 @@ public class DepartmentControllerTest {
 
     @Test
     public void shouldFindAllDepartments() throws Exception {
-        when(service.getAllDepartments(any())).thenReturn(sampleDepartmentResponseList());
+        when(service.getAllDepartments(any())).thenReturn(sampleSimpleDepartmentResponseList());
         mockMvc.perform(get("/departments"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -43,9 +42,7 @@ public class DepartmentControllerTest {
                 .andExpect(jsonPath("$[0].departmentNumber").value("d001"))
                 .andExpect(jsonPath("$[0].departmentName").value("testDep1"))
                 .andExpect(jsonPath("$[1].departmentNumber").value("d002"))
-                .andExpect(jsonPath("$[1].departmentName").value("testDep2"))
-                .andExpect(jsonPath("$[2].departmentNumber").value("d003"))
-                .andExpect(jsonPath("$[2].departmentName").value("testDep3"));
+                .andExpect(jsonPath("$[1].departmentName").value("testDep2"));
         verify(service, times(1)).getAllDepartments(any());
         verifyNoMoreInteractions(service);
     }

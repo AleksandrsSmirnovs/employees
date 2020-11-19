@@ -28,21 +28,11 @@ public class Employee {
     @Column(name = "hire_date")
     private Date hireDate;
 
-    @OneToMany
-    @JoinTable(
-            name = "dept_emp",
-            joinColumns = @JoinColumn(name = "emp_no"),
-            inverseJoinColumns = @JoinColumn(name = "dept_no")
-    )
-    private List<Department> departments;
+    @OneToMany(mappedBy = "departmentEmployeeId.employeeNumber")
+    private List<DepartmentEmployee> departments;
 
-    @OneToMany
-    @JoinTable(
-            name = "dept_manager",
-            joinColumns = @JoinColumn(name = "emp_no"),
-            inverseJoinColumns = @JoinColumn(name = "dept_no")
-    )
-    private List<Department> managedDepartments;
+    @OneToMany(mappedBy = "departmentManagerId.employeeNumber")
+    private List<DepartmentManager> managedDepartments;
 
     @OneToMany(mappedBy = "salaryId.employeeNumber")
     private List<Salary> salaries;
@@ -53,7 +43,16 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(Integer employeeNumber, Date birthDate, String firstName, String lastName, Character gender, Date hireDate, List<Department> departments, List<Department> managedDepartments, List<Salary> salaries, List<Title> titles) {
+    public Employee(Integer employeeNumber, Date birthDate, String firstName, String lastName, Character gender, Date hireDate) {
+        this.employeeNumber = employeeNumber;
+        this.birthDate = birthDate;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.hireDate = hireDate;
+    }
+
+    public Employee(Integer employeeNumber, Date birthDate, String firstName, String lastName, Character gender, Date hireDate, List<DepartmentEmployee> departments, List<DepartmentManager> managedDepartments, List<Salary> salaries, List<Title> titles) {
         this.employeeNumber = employeeNumber;
         this.birthDate = birthDate;
         this.firstName = firstName;
@@ -114,19 +113,19 @@ public class Employee {
         this.hireDate = hireDate;
     }
 
-    public List<Department> getDepartments() {
+    public List<DepartmentEmployee> getDepartments() {
         return departments;
     }
 
-    public void setDepartments(List<Department> departments) {
+    public void setDepartments(List<DepartmentEmployee> departments) {
         this.departments = departments;
     }
 
-    public List<Department> getManagedDepartments() {
+    public List<DepartmentManager> getManagedDepartments() {
         return managedDepartments;
     }
 
-    public void setManagedDepartments(List<Department> managedDepartments) {
+    public void setManagedDepartments(List<DepartmentManager> managedDepartments) {
         this.managedDepartments = managedDepartments;
     }
 

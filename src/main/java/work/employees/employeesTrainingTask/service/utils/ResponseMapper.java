@@ -1,12 +1,12 @@
 package work.employees.employeesTrainingTask.service.utils;
 
 import org.springframework.stereotype.Service;
-import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.Employee;
-import work.employees.employeesTrainingTask.domain.Salary;
-import work.employees.employeesTrainingTask.domain.Title;
+import work.employees.employeesTrainingTask.domain.*;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
+
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
@@ -28,21 +28,41 @@ public class ResponseMapper {
         );
     }
 
-    public EmployeeResponse createEmployeeResponse(Employee entity) {
-        return new EmployeeResponse(entity.getEmployeeNumber(),
-                entity.getBirthDate(),
-                entity.getFirstName(),
-                entity.getLastName(),
-                entity.getGender(),
-                entity.getHireDate(),
-                emptyIfNull(entity.getDepartments()).stream().map(this::createDepartmentResponseForEmployee).collect(toList()),
-                emptyIfNull(entity.getManagedDepartments()).stream().map(this::createDepartmentResponseForEmployee).collect(toList()),
-                emptyIfNull(entity.getSalaries()).stream().map(this::createSalaryResponseForEmployee).collect(toList()),
-                emptyIfNull(entity.getTitles()).stream().map(this::createTitleResponseForEmployee).collect(toList()));
+    public EmployeeResponse createEmployeeResponse(Employee employee) {
+        return new EmployeeResponse(employee.getEmployeeNumber(),
+                employee.getBirthDate(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getGender(),
+                employee.getHireDate(),
+                employee.getDepartments() == null ? Collections.emptyList() : createDepartmentResponseListForEmployee(employee.getDepartments()),
+                employee.getManagedDepartments() == null ? Collections.emptyList() : createDepartmentManagerResponseListForEmployee(employee.getManagedDepartments()),
+                emptyIfNull(employee.getSalaries()).stream().map(this::createSalaryResponseForEmployee).collect(toList()),
+                emptyIfNull(employee.getTitles()).stream().map(this::createTitleResponseForEmployee).collect(toList()));
     }
 
-    public DepartmentResponse createDepartmentResponseForEmployee(Department department) {
-        return new DepartmentResponse(department.getDepartmentNumber(), department.getDepartmentName());
+    public List<DepartmentResponse> createDepartmentResponseListForEmployee(List<DepartmentEmployee> departmentEmployeeList) {
+        return departmentEmployeeList
+                .stream()
+                .map(departmentEmployee -> new DepartmentResponse(
+                        departmentEmployee.getDepartmentEmployeeId().getDepartmentNumber(),
+                        departmentEmployee.getDepartment().getDepartmentName(),
+                        departmentEmployee.getFromDate(),
+                        departmentEmployee.getToDate()
+                ))
+                .collect(toList());
+    }
+
+    public List<DepartmentResponse> createDepartmentManagerResponseListForEmployee(List<DepartmentManager> departmentManagerList) {
+        return departmentManagerList
+                .stream()
+                .map(departmentManager -> new DepartmentResponse(
+                        departmentManager.getDepartmentManagerId().getDepartmentNumber(),
+                        departmentManager.getDepartment().getDepartmentName(),
+                        departmentManager.getFromDate(),
+                        departmentManager.getToDate()
+                ))
+                .collect(toList());
     }
 
     public SalaryResponse createSalaryResponseForEmployee(Salary salary) {
@@ -55,6 +75,10 @@ public class ResponseMapper {
 
     public DepartmentResponse createDepartmentResponse(Department department) {
         return new DepartmentResponse(department.getDepartmentNumber(), department.getDepartmentName());
+    }
+
+    public SimpleDepartmentResponse createSimpleDepartmentResponse(Department department) {
+        return new SimpleDepartmentResponse(department.getDepartmentNumber(), department.getDepartmentName());
     }
 
 

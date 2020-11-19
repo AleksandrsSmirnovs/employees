@@ -1,8 +1,6 @@
 package work.employees.employeesTrainingTask.request;
 
-import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.Salary;
-import work.employees.employeesTrainingTask.domain.Title;
+import work.employees.employeesTrainingTask.domain.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -29,9 +27,9 @@ public class CreateEmployeeRequest {
     @NotNull
     private Date hireDate;
 
-    private List<Department> departments;
+    private List<DepartmentEmployee> departments;
 
-    private List<Department> managedDepartments;
+    private List<DepartmentManager> managedDepartments;
 
     private List<Salary> salaries;
 
@@ -40,7 +38,7 @@ public class CreateEmployeeRequest {
     public CreateEmployeeRequest() {
     }
 
-    public CreateEmployeeRequest(Integer employeeNumber, @NotNull Date birthDate, @NotEmpty String firstName, @NotEmpty String lastName, @NotNull Character gender, @NotNull Date hireDate, List<Department> departments, List<Department> managedDepartments, List<Salary> salaries, List<Title> titles) {
+    public CreateEmployeeRequest(Integer employeeNumber, @NotNull Date birthDate, @NotEmpty String firstName, @NotEmpty String lastName, @NotNull Character gender, @NotNull Date hireDate, List<DepartmentEmployee> departments, List<DepartmentManager> managedDepartments, List<Salary> salaries, List<Title> titles) {
         this.employeeNumber = employeeNumber;
         this.birthDate = birthDate;
         this.firstName = firstName;
@@ -101,19 +99,19 @@ public class CreateEmployeeRequest {
         this.hireDate = hireDate;
     }
 
-    public List<Department> getDepartments() {
+    public List<DepartmentEmployee> getDepartments() {
         return departments;
     }
 
-    public void setDepartments(List<Department> departments) {
+    public void setDepartments(List<DepartmentEmployee> departments) {
         this.departments = departments;
     }
 
-    public List<Department> getManagedDepartments() {
+    public List<DepartmentManager> getManagedDepartments() {
         return managedDepartments;
     }
 
-    public void setManagedDepartments(List<Department> managedDepartments) {
+    public void setManagedDepartments(List<DepartmentManager> managedDepartments) {
         this.managedDepartments = managedDepartments;
     }
 
