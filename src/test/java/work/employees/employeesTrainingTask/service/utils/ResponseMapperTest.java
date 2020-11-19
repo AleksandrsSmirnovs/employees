@@ -12,6 +12,7 @@ import work.employees.employeesTrainingTask.response.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,6 +104,50 @@ public class ResponseMapperTest {
         SimpleDepartmentResponse actual = victim.createSimpleDepartmentResponse(new Department("d001", "testDep1", null, null));
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void shouldCreateDepartmentManagerResponseListForEmployee() throws ParseException {
+        List<DepartmentResponse> expected = List.of(
+                new DepartmentResponse("d001", "testDep1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
+                new DepartmentResponse("d001", "testDep1", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
+        );
+        List<DepartmentResponse> actual = victim.createDepartmentManagerResponseListForEmployee(sampleDepartmentManagerList());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldCreateDepartmentResponseListForEmployee() throws ParseException {
+        List<DepartmentResponse> expected = List.of(
+                new DepartmentResponse("d001", "testDep1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
+                new DepartmentResponse("d001", "testDep1", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
+        );
+        List<DepartmentResponse> actual = victim.createDepartmentResponseListForEmployee(sampleDepartmentEmployeeList());
+        assertEquals(expected, actual);
+    }
+
+//    @Test
+//    public void shouldCreateEmployeeResponse() throws ParseException {
+//        EmployeeResponse expected = sampleEmployeeResponse();
+//        EmployeeResponse actual = victim.createEmployeeResponse(new Employee(
+//                123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
+//                List.of(
+//                        new DepartmentEmployee( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
+//                        new DepartmentEmployee( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
+//                ),
+//                List.of(
+//                        new DepartmentManager( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01")), ),
+//                        new DepartmentManager( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
+//                ),
+//                List.of(
+//                        new Salary(12345, dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
+//                        new Salary(54321, dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
+//                ),
+//                List.of(
+//                        new Title("TestTitle1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
+//                        new Title("TestTitle2", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
+//                )
+//        ));
+//    }
 
 
 

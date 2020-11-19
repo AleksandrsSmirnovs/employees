@@ -77,6 +77,21 @@ public class TestUtils {
         );
     }
 
+    public static List<DepartmentEmployee> sampleDepartmentEmployeeList() throws ParseException {
+        return List.of(
+                new DepartmentEmployee( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
+                new DepartmentEmployee( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
+        );
+    }
+
+
+    public static List<DepartmentManager> sampleDepartmentManagerList() throws ParseException {
+        return List.of(
+                new DepartmentManager( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
+                new DepartmentManager( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
+        );
+    }
+
     //Responses
     public static EmployeeResponse sampleEmployeeResponse() throws ParseException {
         return new EmployeeResponse(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"), sampleDepartmentResponseList(), sampleDepartmentResponseList(), sampleSalaryResponseList(), sampleTitleResponseList());
@@ -147,6 +162,7 @@ public class TestUtils {
                 new SimpleDepartmentResponse("d001", "testDep1")
         );
     }
+
 
     //Other
     public static List<String> sampleTitleNameList() throws ParseException {

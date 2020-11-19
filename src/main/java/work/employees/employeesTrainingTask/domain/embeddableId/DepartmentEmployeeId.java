@@ -52,4 +52,12 @@ public class DepartmentEmployeeId implements Serializable {
     public int hashCode() {
         return Objects.hash(departmentNumber, employeeNumber);
     }
+
+    @Override
+    public String toString() {
+        return "DepartmentEmployeeId{" +
+                "departmentNumber='" + departmentNumber + '\'' +
+                ", employeeNumber=" + employeeNumber +
+                '}';
+    }
 }

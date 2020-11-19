@@ -27,9 +27,9 @@ public class CreateEmployeeRequest {
     @NotNull
     private Date hireDate;
 
-    private List<DepartmentEmployee> departments;
+    private List<CreateEmployeeDepartmentRequest> departments;
 
-    private List<DepartmentManager> managedDepartments;
+    private List<CreateEmployeeDepartmentRequest> managedDepartments;
 
     private List<Salary> salaries;
 
@@ -38,7 +38,7 @@ public class CreateEmployeeRequest {
     public CreateEmployeeRequest() {
     }
 
-    public CreateEmployeeRequest(Integer employeeNumber, @NotNull Date birthDate, @NotEmpty String firstName, @NotEmpty String lastName, @NotNull Character gender, @NotNull Date hireDate, List<DepartmentEmployee> departments, List<DepartmentManager> managedDepartments, List<Salary> salaries, List<Title> titles) {
+    public CreateEmployeeRequest(Integer employeeNumber, @NotNull Date birthDate, @NotEmpty String firstName, @NotEmpty String lastName, @NotNull Character gender, @NotNull Date hireDate, List<CreateEmployeeDepartmentRequest> departments, List<CreateEmployeeDepartmentRequest> managedDepartments, List<Salary> salaries, List<Title> titles) {
         this.employeeNumber = employeeNumber;
         this.birthDate = birthDate;
         this.firstName = firstName;
@@ -99,19 +99,19 @@ public class CreateEmployeeRequest {
         this.hireDate = hireDate;
     }
 
-    public List<DepartmentEmployee> getDepartments() {
+    public List<CreateEmployeeDepartmentRequest> getDepartments() {
         return departments;
     }
 
-    public void setDepartments(List<DepartmentEmployee> departments) {
+    public void setDepartments(List<CreateEmployeeDepartmentRequest> departments) {
         this.departments = departments;
     }
 
-    public List<DepartmentManager> getManagedDepartments() {
+    public List<CreateEmployeeDepartmentRequest> getManagedDepartments() {
         return managedDepartments;
     }
 
-    public void setManagedDepartments(List<DepartmentManager> managedDepartments) {
+    public void setManagedDepartments(List<CreateEmployeeDepartmentRequest> managedDepartments) {
         this.managedDepartments = managedDepartments;
     }
 

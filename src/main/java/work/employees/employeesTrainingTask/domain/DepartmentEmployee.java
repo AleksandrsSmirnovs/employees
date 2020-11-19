@@ -32,6 +32,12 @@ public class DepartmentEmployee {
     public DepartmentEmployee() {
     }
 
+    public DepartmentEmployee(String departmentNumber, Integer employeeNumber, Date fromDate, Date toDate) {
+        this.departmentEmployeeId = new DepartmentEmployeeId(departmentNumber, employeeNumber);
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+    }
+
     public DepartmentEmployee(Date fromDate, Date toDate, Employee employee, Department department) {
         this.departmentEmployeeId = new DepartmentEmployeeId(department.getDepartmentNumber(), employee.getEmployeeNumber());
         this.fromDate = fromDate;

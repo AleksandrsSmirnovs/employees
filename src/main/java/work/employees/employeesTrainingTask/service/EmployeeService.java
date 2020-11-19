@@ -4,15 +4,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import work.employees.employeesTrainingTask.domain.Department;
+import work.employees.employeesTrainingTask.domain.DepartmentEmployee;
+import work.employees.employeesTrainingTask.domain.DepartmentManager;
 import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.exception.ItemAlreadyExistsException;
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
+import work.employees.employeesTrainingTask.repository.DepartmentRepository;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
+import work.employees.employeesTrainingTask.request.CreateEmployeeDepartmentRequest;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
 import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 import work.employees.employeesTrainingTask.service.utils.DataSorter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,11 +28,13 @@ import static java.util.stream.Collectors.toList;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
     private final ResponseMapper mapper;
     private final DataSorter sorter;
 
-    public EmployeeService(EmployeeRepository employeeRepository, ResponseMapper mapper, DataSorter sorter) {
+    public EmployeeService(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, ResponseMapper mapper, DataSorter sorter) {
         this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;
         this.mapper = mapper;
         this.sorter = sorter;
     }
@@ -56,12 +64,29 @@ public class EmployeeService {
     }
 
     public EmployeeResponse saveEmployee(CreateEmployeeRequest request) {
-        if (request.getEmployeeNumber() == null || request.getEmployeeNumber() > employeeRepository.getMaxId()) {
+        if (request.getEmployeeNumber() == null || employeeRepository.existsById(request.getEmployeeNumber())) {
             request.setEmployeeNumber(employeeRepository.getMaxId() + 1);
         } else {
             throw new ItemAlreadyExistsException("Item with id " + request.getEmployeeNumber() + " already exists");
         }
-        return mapper.createEmployeeResponse(employeeRepository.save(mapper.createEmployeeFromCreateRequest(request)));
+        Employee employee = mapper.createEmployeeFromCreateRequest(request);
+//        employee.setDepartments(new ArrayList<>());
+//        if (request.getDepartments() != null) {
+//            for (CreateEmployeeDepartmentRequest createEmployeeDepartmentRequest : request.getDepartments()) {
+//                Department department = departmentRepository.findById(createEmployeeDepartmentRequest.getDepartmentNumber())
+//                        .orElse(new Department(createEmployeeDepartmentRequest.getDepartmentNumber(), createEmployeeDepartmentRequest.getDepartmentName()));
+//                DepartmentEmployee departmentEmployee = mapper.createDepartmentEmployeeRelationship(
+//                        employee,
+//                        department,
+//                        createEmployeeDepartmentRequest.getFromDate(),
+//                        createEmployeeDepartmentRequest.getToDate()
+//                );
+//                employee.getDepartments().add(departmentEmployee);
+//            }
+////        }
+//        employee.setSalaries(request.getSalaries());
+        employeeRepository.save(employee);
+        return mapper.createEmployeeResponse(employee);
     }
 
 }

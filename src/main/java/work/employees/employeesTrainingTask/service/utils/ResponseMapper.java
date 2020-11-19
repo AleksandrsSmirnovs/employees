@@ -2,11 +2,14 @@ package work.employees.employeesTrainingTask.service.utils;
 
 import org.springframework.stereotype.Service;
 import work.employees.employeesTrainingTask.domain.*;
+import work.employees.employeesTrainingTask.request.CreateEmployeeDepartmentRequest;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
@@ -87,16 +90,31 @@ public class ResponseMapper {
     }
 
     public Employee createEmployeeFromCreateRequest(CreateEmployeeRequest request) {
-        return new Employee(request.getEmployeeNumber(),
+        Employee employee = new Employee(request.getEmployeeNumber(),
                 request.getBirthDate(),
                 request.getFirstName(),
                 request.getLastName(),
                 request.getGender(),
-                request.getHireDate(),
-                request.getDepartments(),
-                request.getManagedDepartments(),
-                request.getSalaries(),
-                request.getTitles());
+                request.getHireDate());
+//        employee.setDepartments(request.getDepartments().stream().map(createEmployeeDepartmentRequest -> new DepartmentEmployee(
+//                createEmployeeDepartmentRequest.getFromDate(),
+//                createEmployeeDepartmentRequest.getToDate(),
+//                employee,
+//                new Department(createEmployeeDepartmentRequest.getDepartmentNumber(), createEmployeeDepartmentRequest.getDepartmentName())))
+//        .collect(toList()));
+//        employee.setManagedDepartments(request.getDepartments().stream().map(createEmployeeDepartmentRequest -> new DepartmentManager(
+//                createEmployeeDepartmentRequest.getFromDate(),
+//                createEmployeeDepartmentRequest.getToDate(),
+//                employee,
+//                new Department(createEmployeeDepartmentRequest.getDepartmentNumber(), createEmployeeDepartmentRequest.getDepartmentName())))
+//                .collect(toList()));
+        employee.setSalaries(request.getSalaries());
+        employee.setTitles(request.getTitles());
+        return employee;
+    }
+
+    public DepartmentEmployee createDepartmentEmployeeRelationship(Employee employee, Department department, Date dateFrom, Date dateTo) {
+        return new DepartmentEmployee(dateFrom, dateTo, employee, department);
     }
 
 }
