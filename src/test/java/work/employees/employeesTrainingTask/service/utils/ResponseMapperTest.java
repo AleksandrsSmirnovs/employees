@@ -1,33 +1,42 @@
 package work.employees.employeesTrainingTask.service.utils;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import work.employees.employeesTrainingTask.domain.*;
 import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
 import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
-import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
+import work.employees.employeesTrainingTask.repository.DepartmentRepository;
 import work.employees.employeesTrainingTask.response.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static work.employees.employeesTrainingTask.utils.TestUtils.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResponseMapperTest {
 
+    @Mock
+    private DepartmentRepository departmentRepository;
+
+    @InjectMocks
     private ResponseMapper victim;
+
 
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     @Before
     public void init() {
-        victim = new ResponseMapper();
+        victim = new ResponseMapper(departmentRepository);
     }
 
     @Test
@@ -65,28 +74,28 @@ public class ResponseMapperTest {
         assertEquals(actual, expected);
     }
 
-//    @Test
-//    public void shouldCreateEmployeeFromCreateRequest() throws ParseException {
-//        Employee expected = new Employee(
-//                123,
-//                dateFormatter.parse("1981-01-01"),
-//                "Name1",
-//                "LastName1",
-//                'M',
-//                dateFormatter.parse("2001-01-01"),
-//                null,
-//                null,
-//                List.of(
-//                        new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03")),
-//                        new Salary(new SalaryId(321, dateFormatter.parse("2004-04-04")), 54321, dateFormatter.parse("2006-06-06"))
-//                ),
-//                List.of(
-//                        new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
-//                        new Title(new TitleId(321, "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06"))
-//                ));
-//        Employee actual = victim.createEmployeeFromCreateRequest(sampleCreateEmployeeRequest());
-//        assertEquals(expected, actual);
-//    }
+    @Test
+    public void shouldCreateEmployeeFromCreateRequest() throws ParseException {
+        Employee employee = victim.createEmployeeFromCreateRequest(sampleCreateEmployeeRequest());
+        assertThat(employee.getEmployeeNumber()).isEqualTo(123);
+        assertThat(employee.getBirthDate()).isEqualTo(dateFormatter.parse("1981-01-01"));
+        assertThat(employee.getFirstName()).isEqualTo("Name1");
+        assertThat(employee.getLastName()).isEqualTo("LastName1");
+        assertThat(employee.getGender()).isEqualTo('M');
+        assertThat(employee.getHireDate()).isEqualTo(dateFormatter.parse("2001-01-01"));
+        assertThat(employee.getDepartments().size()).isEqualTo(3);
+        assertThat(employee.getDepartments()).contains(new DepartmentEmployee(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), employee, new Department("d001", "testDep1")));
+        assertThat(employee.getDepartments()).contains(new DepartmentEmployee(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), employee, new Department("d002", "testDep2")));
+        assertThat(employee.getDepartments()).contains(new DepartmentEmployee(dateFormatter.parse("2005-05-05"), dateFormatter.parse("2007-07-07"), employee, new Department("d003", "testDep3")));
+        assertThat(employee.getManagedDepartments()).contains(new DepartmentManager(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), employee, new Department("d001", "testDep1")));
+        assertThat(employee.getManagedDepartments()).contains(new DepartmentManager(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), employee, new Department("d002", "testDep2")));
+        assertThat(employee.getSalaries().size()).isEqualTo(2);
+        assertThat(employee.getSalaries()).contains(new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03")));
+        assertThat(employee.getSalaries()).contains(new Salary(new SalaryId(123, dateFormatter.parse("2003-03-03")), 54321, dateFormatter.parse("2005-05-05")));
+        assertThat(employee.getTitles().size()).isEqualTo(2);
+        assertThat(employee.getTitles()).contains(new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")));
+        assertThat(employee.getTitles()).contains(new Title(new TitleId(123, "TestTitle2", dateFormatter.parse("2003-03-03")), dateFormatter.parse("2005-05-05")));
+    }
 
     @Test
     public void shouldCreateEmployeeDeleteResponse() throws ParseException {
@@ -125,29 +134,29 @@ public class ResponseMapperTest {
         assertEquals(expected, actual);
     }
 
-//    @Test
-//    public void shouldCreateEmployeeResponse() throws ParseException {
-//        EmployeeResponse expected = sampleEmployeeResponse();
-//        EmployeeResponse actual = victim.createEmployeeResponse(new Employee(
-//                123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
-//                List.of(
-//                        new DepartmentEmployee( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
-//                        new DepartmentEmployee( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
-//                ),
-//                List.of(
-//                        new DepartmentManager( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01")), ),
-//                        new DepartmentManager( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
-//                ),
-//                List.of(
-//                        new Salary(12345, dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
-//                        new Salary(54321, dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
-//                ),
-//                List.of(
-//                        new Title("TestTitle1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
-//                        new Title("TestTitle2", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
-//                )
-//        ));
-//    }
+    @Test
+    public void shouldCreateEmployeeResponse() throws ParseException {
+        EmployeeResponse expected = sampleEmployeeResponse();
+        EmployeeResponse actual = victim.createEmployeeResponse(new Employee(
+                123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
+                List.of(
+                        new DepartmentEmployee( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01")),new Department("d001", "testDep1")),
+                        new DepartmentEmployee( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01")),new Department("d001", "testDep1"))
+                ),
+                List.of(
+                        new DepartmentManager( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01")),new Department("d001", "testDep1")),
+                        new DepartmentManager( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01")),new Department("d001", "testDep1"))
+                ),
+                List.of(
+                        new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03")),
+                        new Salary(new SalaryId(123, dateFormatter.parse("2003-03-03")),54321, dateFormatter.parse("2005-05-05"))
+                ),
+                List.of(
+                        new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
+                        new Title(new TitleId(123, "TestTitle2", dateFormatter.parse("2003-03-03")), dateFormatter.parse("2005-05-05"))
+                )
+        ));
+    }
 
 
 

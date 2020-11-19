@@ -111,14 +111,4 @@ public class DepartmentEmployee {
         return Objects.hash(departmentEmployeeId, fromDate, toDate, employee, department);
     }
 
-    @Override
-    public String toString() {
-        return "DepartmentEmployee{" +
-                "departmentEmployeeId=" + departmentEmployeeId +
-                ", fromDate=" + fromDate +
-                ", toDate=" + toDate +
-                ", employee=" + employee +
-                ", department=" + department +
-                '}';
-    }
 }

@@ -25,13 +25,11 @@ import static java.util.stream.Collectors.toList;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
     private final ResponseMapper mapper;
     private final DataSorter sorter;
 
-    public EmployeeService(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, ResponseMapper mapper, DataSorter sorter) {
+    public EmployeeService(EmployeeRepository employeeRepository, ResponseMapper mapper, DataSorter sorter) {
         this.employeeRepository = employeeRepository;
-        this.departmentRepository = departmentRepository;
         this.mapper = mapper;
         this.sorter = sorter;
     }
@@ -67,48 +65,6 @@ public class EmployeeService {
             throw new ItemAlreadyExistsException("Item with id " + request.getEmployeeNumber() + " already exists");
         }
         Employee employee = mapper.createEmployeeFromCreateRequest(request);
-//        employee.setDepartments(request.getDepartments().stream()
-//                .map(createEmployeeDepartmentRequest ->
-//                        new DepartmentEmployee(
-//                                createEmployeeDepartmentRequest.getDepartmentNumber(),
-//                                employee.getEmployeeNumber(),
-//                                createEmployeeDepartmentRequest.getFromDate(),
-//                                createEmployeeDepartmentRequest.getToDate()))
-//                .collect(toList()));
-        employee.setDepartments(request.getDepartments().stream()
-                .map(createEmployeeDepartmentRequest ->
-                        new DepartmentEmployee(
-                                createEmployeeDepartmentRequest.getFromDate(),
-                                createEmployeeDepartmentRequest.getToDate(),
-                                employee,
-                                departmentRepository.findById(createEmployeeDepartmentRequest.getDepartmentNumber()).orElse(new Department())
-                        ))
-                .collect(toList()));
-        employee.setManagedDepartments(request.getDepartments().stream()
-                .map(createEmployeeDepartmentRequest ->
-                        new DepartmentManager(
-                                createEmployeeDepartmentRequest.getFromDate(),
-                                createEmployeeDepartmentRequest.getToDate(),
-                                employee,
-                                departmentRepository.findById(createEmployeeDepartmentRequest.getDepartmentNumber()).orElse(new Department())
-                        ))
-                .collect(toList()));
-        employee.setSalaries(request.getSalaries().stream()
-                .map(createEmployeeSalaryRequest ->
-                        new Salary(
-                                new SalaryId(employee.getEmployeeNumber(), createEmployeeSalaryRequest.getFromDate()),
-                                createEmployeeSalaryRequest.getSalary(),
-                                createEmployeeSalaryRequest.getToDate()))
-                .collect(toList()));
-        employee.setTitles(request.getTitles().stream()
-                .map(createEmployeeTitleRequest -> new Title(
-                        new TitleId(employee.getEmployeeNumber(), createEmployeeTitleRequest.getTitle(), createEmployeeTitleRequest.getFromDate()),
-                        createEmployeeTitleRequest.getToDate()
-                ))
-                .collect(toList()));
-       System.out.println(mapper.createDepartmentResponseListForEmployee(employee.getDepartments()));
-       System.out.println(mapper.createDepartmentManagerResponseListForEmployee(employee.getManagedDepartments()));
-
         return mapper.createEmployeeResponse(employeeRepository.save(employee));
     }
 }

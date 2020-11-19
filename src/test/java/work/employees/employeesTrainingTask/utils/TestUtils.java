@@ -6,7 +6,10 @@ import org.springframework.stereotype.Component;
 import work.employees.employeesTrainingTask.domain.*;
 import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
 import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
+import work.employees.employeesTrainingTask.request.CreateEmployeeDepartmentRequest;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
+import work.employees.employeesTrainingTask.request.CreateEmployeeSalaryRequest;
+import work.employees.employeesTrainingTask.request.CreateEmployeeTitleRequest;
 import work.employees.employeesTrainingTask.response.*;
 
 import java.text.ParseException;
@@ -79,16 +82,16 @@ public class TestUtils {
 
     public static List<DepartmentEmployee> sampleDepartmentEmployeeList() throws ParseException {
         return List.of(
-                new DepartmentEmployee( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
-                new DepartmentEmployee( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
+                new DepartmentEmployee(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
+                new DepartmentEmployee(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
         );
     }
 
 
     public static List<DepartmentManager> sampleDepartmentManagerList() throws ParseException {
         return List.of(
-                new DepartmentManager( dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
-                new DepartmentManager( dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
+                new DepartmentManager(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
+                new DepartmentManager(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment())
         );
     }
 
@@ -124,14 +127,14 @@ public class TestUtils {
         return List.of(
                 new EmployeeResponse(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"), sampleDepartmentResponseList(), sampleDepartmentResponseList(), sampleSalaryResponseList(), sampleTitleResponseList()),
                 new EmployeeResponse(321, dateFormatter.parse("1982-02-02"), "Name2", "LastName2", 'F', dateFormatter.parse("2002-02-02"), sampleDepartmentResponseList(), sampleDepartmentResponseList(), sampleSalaryResponseList(), sampleTitleResponseList())
-                );
+        );
     }
 
     public static List<DepartmentResponse> sampleDepartmentResponseList() throws ParseException {
         return List.of(
                 new DepartmentResponse("d001", "testDep1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
                 new DepartmentResponse("d002", "testDep2", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
-                );
+        );
     }
 
     public static List<SalaryResponse> sampleSalaryResponseList() throws ParseException {
@@ -188,53 +191,23 @@ public class TestUtils {
         return null;
     }
 
-//    public static CreateEmployeeRequest sampleCreateEmployeeRequest() throws ParseException {
-//        return new CreateEmployeeRequest(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
-//                null,
-//                null,
-//                sampleSalaryList(),
-//                sampleTitleList());
-//    }
-
-//
-//    public static void sampleDepartmentEmployeeList() throws ParseException {
-//        employee.setDepartments(List.of(
-//                new DepartmentEmployee(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), employee, sampleDepartment()),
-//                new DepartmentEmployee(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), employee, sampleDepartment()),
-//                new DepartmentEmployee(dateFormatter.parse("2005-05-05"), dateFormatter.parse("2007-07-07"), employee, sampleDepartment())
-//        ));
-//    }
-////
-//    public static List<DepartmentEmployee> sampleDepartmentEmployeeListReversed() throws ParseException {
-//        return List.of(
-//                new DepartmentEmployee(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
-//                new DepartmentEmployee(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment()),
-//                new DepartmentEmployee(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment())
-//        );
-//    }
-//
-//    public static List<DepartmentManager> sampleDepartmentManagerList() throws ParseException {
-//        return List.of(
-//                new DepartmentManager(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), sampleEmployee(), sampleDepartment()),
-//                new DepartmentManager(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), sampleEmployee(), sampleDepartment()),
-//                new DepartmentManager(dateFormatter.parse("2005-05-05"), dateFormatter.parse("2007-07-07"), sampleEmployee(), sampleDepartment())
-//        );
-//    }
-//
-
-////
-//    public static List<Employee> sampleShortEmployeeList() throws ParseException {
-//        return List.of(
-//                new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"), null, null, null, null),
-//                new Employee(234, dateFormatter.parse("1982-02-02"), "Name2", "LastName2", 'F', dateFormatter.parse("2002-02-02"), null, null, null, null),
-//                new Employee(345, dateFormatter.parse("1983-03-03"), "Name3", "LastName3", 'M', dateFormatter.parse("2003-03-03"), null, null, null, null)
-//        );
-//    }
-//
-//
-//    public static SimpleDepartmentResponse sampleDepartmentResponse() throws ParseException {
-//
-//        return new SimpleDepartmentResponse("d001", "testDep1");
-//    }
+    public static CreateEmployeeRequest sampleCreateEmployeeRequest() throws ParseException {
+        return new CreateEmployeeRequest(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"),
+                List.of(
+                        new CreateEmployeeDepartmentRequest("d001", "testDep1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
+                        new CreateEmployeeDepartmentRequest("d002", "testDep2", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05")),
+                        new CreateEmployeeDepartmentRequest("d003", "testDep3", dateFormatter.parse("2005-05-05"), dateFormatter.parse("2007-07-07"))),
+                List.of(
+                        new CreateEmployeeDepartmentRequest("d001", "testDep1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
+                        new CreateEmployeeDepartmentRequest("d002", "testDep2", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))),
+                List.of(
+                        new CreateEmployeeSalaryRequest(12345, dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
+                        new CreateEmployeeSalaryRequest(54321, dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))),
+                List.of(
+                        new CreateEmployeeTitleRequest("TestTitle1", dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03")),
+                        new CreateEmployeeTitleRequest("TestTitle2", dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"))
+                )
+        );
+    }
 
 }
