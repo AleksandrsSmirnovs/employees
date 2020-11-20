@@ -1,11 +1,12 @@
 package work.employees.employeesTrainingTask.service.utils;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import work.employees.employeesTrainingTask.domain.*;
 import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
@@ -16,10 +17,12 @@ import work.employees.employeesTrainingTask.response.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static work.employees.employeesTrainingTask.utils.TestUtils.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -68,7 +71,7 @@ public class ResponseMapperTest {
     }
 
     @Test
-    public void shouldCreateDepartmentResponse() throws ParseException {
+    public void shouldCreateDepartmentResponse() {
         DepartmentResponse expected = sampleDepartmentResponse();
         DepartmentResponse actual = victim.createDepartmentResponse(sampleDepartment());
         assertEquals(actual, expected);
@@ -76,6 +79,7 @@ public class ResponseMapperTest {
 
     @Test
     public void shouldCreateEmployeeFromCreateRequest() throws ParseException {
+        when(departmentRepository.save(any())).thenReturn(new Department());
         Employee employee = victim.createEmployeeFromCreateRequest(sampleCreateEmployeeRequest());
         assertThat(employee.getEmployeeNumber()).isEqualTo(123);
         assertThat(employee.getBirthDate()).isEqualTo(dateFormatter.parse("1981-01-01"));
@@ -87,6 +91,7 @@ public class ResponseMapperTest {
         assertThat(employee.getDepartments()).contains(new DepartmentEmployee(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), employee, new Department("d001", "testDep1")));
         assertThat(employee.getDepartments()).contains(new DepartmentEmployee(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), employee, new Department("d002", "testDep2")));
         assertThat(employee.getDepartments()).contains(new DepartmentEmployee(dateFormatter.parse("2005-05-05"), dateFormatter.parse("2007-07-07"), employee, new Department("d003", "testDep3")));
+        assertThat(employee.getManagedDepartments().size()).isEqualTo(2);
         assertThat(employee.getManagedDepartments()).contains(new DepartmentManager(dateFormatter.parse("2001-01-01"), dateFormatter.parse("2003-03-03"), employee, new Department("d001", "testDep1")));
         assertThat(employee.getManagedDepartments()).contains(new DepartmentManager(dateFormatter.parse("2003-03-03"), dateFormatter.parse("2005-05-05"), employee, new Department("d002", "testDep2")));
         assertThat(employee.getSalaries().size()).isEqualTo(2);

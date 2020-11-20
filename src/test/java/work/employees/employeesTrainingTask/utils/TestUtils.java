@@ -2,6 +2,8 @@ package work.employees.employeesTrainingTask.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.stereotype.Component;
 import work.employees.employeesTrainingTask.domain.*;
 import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
@@ -50,7 +52,7 @@ public class TestUtils {
         );
     }
 
-    public static List<Department> sampleDepartmentList() throws ParseException {
+    public static List<Department> sampleDepartmentList() {
         return List.of(
                 new Department("d001", "testDep1"),
                 new Department("d002", "testDep2"),
@@ -58,7 +60,7 @@ public class TestUtils {
         );
     }
 
-    public static List<Department> sampleDepartmentListReversed() throws ParseException {
+    public static List<Department> sampleDepartmentListReversed() {
         return List.of(
                 new Department("d003", "testDep3"),
                 new Department("d002", "testDep2"),
@@ -158,7 +160,7 @@ public class TestUtils {
         );
     }
 
-    public static List<SimpleDepartmentResponse> sampleSimpleDepartmentResponseList() throws ParseException {
+    public static List<SimpleDepartmentResponse> sampleSimpleDepartmentResponseList() {
         return List.of(
                 new SimpleDepartmentResponse("d001", "testDep1"),
                 new SimpleDepartmentResponse("d002", "testDep2"),
@@ -168,7 +170,7 @@ public class TestUtils {
 
 
     //Other
-    public static List<String> sampleTitleNameList() throws ParseException {
+    public static List<String> sampleTitleNameList() {
         return List.of("Title1", "Title2", "Title3");
     }
 

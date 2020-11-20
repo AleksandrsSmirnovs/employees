@@ -1,6 +1,6 @@
 package work.employees.employeesTrainingTask.service.utils;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import work.employees.employeesTrainingTask.domain.*;
 import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
 import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
@@ -8,14 +8,13 @@ import work.employees.employeesTrainingTask.repository.DepartmentRepository;
 import work.employees.employeesTrainingTask.request.CreateEmployeeRequest;
 import work.employees.employeesTrainingTask.response.*;
 
-import java.util.Date;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.emptyIfNull;
 
-@Service
+@Component
 public class ResponseMapper {
 
     private final DepartmentRepository departmentRepository;
@@ -109,10 +108,14 @@ public class ResponseMapper {
                                 createEmployeeDepartmentRequest.getFromDate(),
                                 createEmployeeDepartmentRequest.getToDate(),
                                 employee,
-                                departmentRepository.findById(createEmployeeDepartmentRequest.getDepartmentNumber()).orElse(new Department())
+                                departmentRepository.findById(createEmployeeDepartmentRequest.getDepartmentNumber())
+                                        .orElse(departmentRepository.save(new Department(
+                                                createEmployeeDepartmentRequest.getDepartmentNumber(),
+                                                createEmployeeDepartmentRequest.getDepartmentName()
+                                        )))
                         ))
                 .collect(toList()));
-        employee.setManagedDepartments(request.getDepartments().stream()
+        employee.setManagedDepartments(request.getManagedDepartments().stream()
                 .map(createEmployeeDepartmentRequest ->
                         new DepartmentManager(
                                 createEmployeeDepartmentRequest.getFromDate(),

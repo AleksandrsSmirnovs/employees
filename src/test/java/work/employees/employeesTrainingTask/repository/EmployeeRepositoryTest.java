@@ -15,15 +15,14 @@ import work.employees.employeesTrainingTask.domain.embeddableId.DepartmentEmploy
 import work.employees.employeesTrainingTask.domain.embeddableId.DepartmentManagerId;
 import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
 import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
+import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
+
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.sql.Timestamp.valueOf;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static work.employees.employeesTrainingTask.utils.TestUtils.sampleEmployee;
 
@@ -35,56 +34,155 @@ public class EmployeeRepositoryTest {
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
+    private TestEntityManager entityManager;
+
+    @Autowired
     private EmployeeRepository victim;
 
-//    @Test
-//    public void shouldNotThrowExceptionWhenSavingEmployee() throws ParseException {
-//        assertThatCode(() -> victim.save(new Employee(123,
-//                dateFormatter.parse("1981-01-01"),
-//                "name",
-//                "lastName",
-//                'M',
-//                dateFormatter.parse("2001-01-01"),
-//                List.of(new Department("d001", "testDep1", List.of(
-//                        new Employee(123, dateFormatter.parse("1981-01-01"), "Name1", "LastName1", 'M', dateFormatter.parse("2001-01-01"), null, null, null, null),
-//                        new Employee(234, dateFormatter.parse("1982-02-02"), "Name2", "LastName2", 'F', dateFormatter.parse("2002-02-02"), null, null, null, null),
-//                        new Employee(345, dateFormatter.parse("1983-03-03"), "Name3", "LastName3", 'M', dateFormatter.parse("2003-03-03"), null, null, null, null)))),
-//                List.of(new Department(new DepartmentManagerId("d001", 123)),
-//                List.of(new Salary(new SalaryId(123, dateFormatter.parse("2001-01-01")), 12345, dateFormatter.parse("2003-03-03")),
-//                        new Salary(new SalaryId(123, dateFormatter.parse("2003-03-03")), 54321, dateFormatter.parse("2005-05-05"))),
-//                List.of(new Title(new TitleId(123, "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03"))))))
-//                .doesNotThrowAnyException();
-//    }
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
 
     @Test
-    public void shouldFindMaxEmployeeNumber() {
-        assertEquals(victim.getMaxId(), 333);
+    public void shouldFindMaxEmployeeNumber() throws ParseException {
+        Employee employee1 = sampleEmployee();
+        Employee employee2 = sampleEmployee();
+        Employee employee3 = sampleEmployee();
+        employee1.setEmployeeNumber(111);
+        employee2.setEmployeeNumber(222);
+        employee3.setEmployeeNumber(333);
+        entityManager.persistAndFlush(employee1);
+        entityManager.persistAndFlush(employee2);
+        entityManager.persistAndFlush(employee3);
+        assertEquals(333, victim.getMaxId());
+    }
+
+    @Test
+    public void shouldReturnEmployeeById() throws ParseException {
+        Employee employee = sampleEmployee();
+        entityManager.persistAndFlush(employee);
+        Employee found = victim.findById(employee.getEmployeeNumber()).orElse(new Employee());
+        assertEquals(employee, found);
+    }
+
+
+    @Test
+    public void shouldGetEmployeesByTitleWithoutExtraParams() throws ParseException {
+        Employee employee1 = sampleEmployee();
+        Employee employee2 = sampleEmployee();
+        Employee employee3 = sampleEmployee();
+        employee1.setEmployeeNumber(1);
+        employee2.setEmployeeNumber(2);
+        employee3.setEmployeeNumber(3);
+        employee1.setTitles(List.of(
+                        new Title(new TitleId(employee1.getEmployeeNumber(), "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
+                        new Title(new TitleId(employee1.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06")))
+                );
+        employee2.setTitles(List.of(
+                new Title(new TitleId(employee2.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
+                new Title(new TitleId(employee2.getEmployeeNumber(), "TestTitle3", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2026-06-06")))
+        );
+        employee3.setTitles(List.of(
+                new Title(new TitleId(employee3.getEmployeeNumber(), "TestTitle3", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2033-03-03")),
+                new Title(new TitleId(employee3.getEmployeeNumber(), "TestTitle1", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2026-06-06")))
+        );
+        entityManager.persistAndFlush(employee1);
+        entityManager.persistAndFlush(employee2);
+        entityManager.persistAndFlush(employee3);
+        List<Employee> expected = List.of(employee2, employee3);
+        List<Employee> actual = victim.getEmployeesByTitle("TestTitle3","%","9999-01-01","0000-01-01",PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldGetEmployeesByTitleWithParams() throws ParseException {
+        Employee employee1 = sampleEmployee();
+        Employee employee2 = sampleEmployee();
+        Employee employee3 = sampleEmployee();
+        Employee employee4 = sampleEmployee();
+        Employee employee5 = sampleEmployee();
+        employee1.setGender('F');
+        employee2.setGender('M');
+        employee3.setGender('F');
+        employee4.setGender('F');
+        employee5.setGender('M');
+        employee1.setHireDate(dateFormatter.parse("1990-01-01"));
+        employee2.setHireDate(dateFormatter.parse("1992-01-01"));
+        employee3.setHireDate(dateFormatter.parse("1994-01-01"));
+        employee4.setHireDate(dateFormatter.parse("1996-01-01"));
+        employee5.setHireDate(dateFormatter.parse("1998-01-01"));
+        employee1.setEmployeeNumber(1);
+        employee2.setEmployeeNumber(2);
+        employee3.setEmployeeNumber(3);
+        employee4.setEmployeeNumber(4);
+        employee5.setEmployeeNumber(5);
+        employee1.setTitles(List.of(
+                new Title(new TitleId(employee1.getEmployeeNumber(), "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2053-03-03")),
+                new Title(new TitleId(employee1.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06")))
+        );
+        employee2.setTitles(List.of(
+                new Title(new TitleId(employee2.getEmployeeNumber(), "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2043-03-03")),
+                new Title(new TitleId(employee2.getEmployeeNumber(), "TestTitle3", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2026-06-06")))
+        );
+        employee3.setTitles(List.of(
+                new Title(new TitleId(employee3.getEmployeeNumber(), "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2033-03-03")),
+                new Title(new TitleId(employee3.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2026-06-06")))
+        );
+        employee4.setTitles(List.of(
+                new Title(new TitleId(employee4.getEmployeeNumber(), "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2033-03-03")),
+                new Title(new TitleId(employee4.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2026-06-06")))
+        );
+        employee5.setTitles(List.of(
+                new Title(new TitleId(employee5.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2033-03-03")),
+                new Title(new TitleId(employee5.getEmployeeNumber(), "TestTitle3", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2026-06-06")))
+        );
+        entityManager.persistAndFlush(employee1);
+        entityManager.persistAndFlush(employee2);
+        entityManager.persistAndFlush(employee3);
+        entityManager.persistAndFlush(employee4);
+        entityManager.persistAndFlush(employee5);
+        List<Employee> expected = List.of(employee3);
+        List<Employee> actual = victim.getEmployeesByTitle("TestTitle1","F","1995-01-01","1991-01-01", PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldFindAllWithParams() throws ParseException {
+        Employee employee1 = sampleEmployee();
+        Employee employee2 = sampleEmployee();
+        Employee employee3 = sampleEmployee();
+        Employee employee4 = sampleEmployee();
+        Employee employee5 = sampleEmployee();
+        employee1.setGender('F');
+        employee2.setGender('F');
+        employee3.setGender('M');
+        employee4.setGender('F');
+        employee5.setGender('F');
+        employee1.setHireDate(dateFormatter.parse("1990-01-01"));
+        employee2.setHireDate(dateFormatter.parse("1992-01-01"));
+        employee3.setHireDate(dateFormatter.parse("1994-01-01"));
+        employee4.setHireDate(dateFormatter.parse("1996-01-01"));
+        employee5.setHireDate(dateFormatter.parse("1998-01-01"));
+        employee1.setEmployeeNumber(1);
+        employee2.setEmployeeNumber(2);
+        employee3.setEmployeeNumber(3);
+        employee4.setEmployeeNumber(4);
+        employee5.setEmployeeNumber(5);
+        entityManager.persistAndFlush(employee1);
+        entityManager.persistAndFlush(employee2);
+        entityManager.persistAndFlush(employee3);
+        entityManager.persistAndFlush(employee4);
+        entityManager.persistAndFlush(employee5);
+        List<Employee> expected = List.of(employee2, employee4);
+        List<Employee> actual = victim.findAllWithParams("F","1997-01-01","1991-01-01", PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
+        assertEquals(expected, actual);
     }
 
 
 
-//    @Test
-//    public void shouldFindEmployeesByTitleWithoutParams() throws ParseException {
-//        List<Employee> actual = victim.getEmployeesByTitle("Title3", "%", "9999-01-01", "0000-01-01", PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "emp_no")));
-//        List<Employee> expected = List.of(
-//                new Employee(222, valueOf("1982-02-02 00:00:00.0"), "Name2", "LastName2", 'F', valueOf("2002-02-02 00:00:00.0"),
-//                        List.of(new Department("d002", "TestDept2")), new ArrayList<>(),
-//                        List.of(new Salary(222, 34567, valueOf("2001-02-03 00:00:00.0"), valueOf("2009-09-09 00:00:00.0"))),
-//                        List.of(new Title(222, "Title3", valueOf("2001-02-03 00:00:00.0"), valueOf("2023-06-07 00:00:00.0")))),
-//                new Employee(333, valueOf("1983-03-03 00:00:00.0"), "Name3", "LastName3", 'M', valueOf("2003-03-03 00:00:00.0"),
-//                        List.of(new Department("d003", "TestDept3")), new ArrayList<>(),
-//                        List.of(new Salary(333, 45678, valueOf("2001-02-03 00:00:00.0"), valueOf("2004-05-06 00:00:00.0"))),
-//                        List.of(new Title(333, "Title3", valueOf("2001-02-03 00:00:00.0"), valueOf("2025-06-07 00:00:00.0"))))
-//        );
-//        assertThat(actual).contains(new Employee(222, valueOf("1982-02-02 00:00:00.0"), "Name2", "LastName2", 'F', valueOf("2002-02-02 00:00:00.0"),
-//                List.of(new Department("d002", "TestDept2")), new ArrayList<>(),
-//                List.of(new Salary(222, 34567, valueOf("2001-02-03 00:00:00.0"), valueOf("2009-09-09 00:00:00.0"))),
-//                List.of(new Title(222, "Title3", valueOf("2001-02-03 00:00:00.0"), valueOf("2023-06-07 00:00:00.0")))));
-//        assertThat(actual).contains(new Employee(333, valueOf("1983-03-03 00:00:00.0"), "Name3", "LastName3", 'M', valueOf("2003-03-03 00:00:00.0"),
-//                List.of(new Department("d003", "TestDept3")), new ArrayList<>(),
-//                List.of(new Salary(333, 45678, valueOf("2001-02-03 00:00:00.0"), valueOf("2004-05-06 00:00:00.0"))),
-//                List.of(new Title(333, "Title3", valueOf("2001-02-03 00:00:00.0"), valueOf("2025-06-07 00:00:00.0")))));
-//    }
+
+
+
 
 
 }

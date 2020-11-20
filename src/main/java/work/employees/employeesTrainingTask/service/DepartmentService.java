@@ -35,7 +35,7 @@ public class DepartmentService {
     }
 
     public List<SimpleDepartmentResponse> getAllDepartments(String order) {
-        List<Department> entityList = order.equalsIgnoreCase("desc") ? (List<Department>) departmentRepository.findAllByOrderByDepartmentNameDesc() : (List<Department>) departmentRepository.findAllByOrderByDepartmentNameAsc();
+        List<Department> entityList = order.equalsIgnoreCase("desc") ? departmentRepository.findAllByOrderByDepartmentNameDesc() : departmentRepository.findAllByOrderByDepartmentNameAsc();
         return entityList.stream().map(mapper::createSimpleDepartmentResponse).collect(toList());
     }
 
@@ -54,5 +54,6 @@ public class DepartmentService {
         }
         return responseList;
     }
+
 
 }

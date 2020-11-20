@@ -43,7 +43,11 @@ public class TitleService {
         String genderParam = gender == null ? "%" : gender.toString();
         String hireDateBeforeParam = Objects.requireNonNullElse(hireDateBefore, "9999-01-01");
         String hireDateAfterParam = Objects.requireNonNullElse(hireDateAfter, "0000-01-01");
-        List<SimpleEmployeeResponse> responseList = employeeRepository.getEmployeesByTitle(title, genderParam, hireDateBeforeParam, hireDateAfterParam, paging).stream().map(mapper::createSimpleEmployeeResponse).collect(toList());
+        List<SimpleEmployeeResponse> responseList = employeeRepository
+                .getEmployeesByTitle(title, genderParam, hireDateBeforeParam, hireDateAfterParam, paging)
+                .stream()
+                .map(mapper::createSimpleEmployeeResponse)
+                .collect(toList());
         if (responseList.isEmpty()) {
             throw new ItemNotFoundException("Employees with title " + title + " not found");
         }

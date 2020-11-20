@@ -29,7 +29,7 @@ public class TitleController {
     public List<SimpleEmployeeResponse> getEmployeesByTitle(@PathVariable String title,
                                                             @RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                                             @RequestParam(required = false, defaultValue = "10") Integer pageSize,
-                                                            @RequestParam(required = false, defaultValue = "lastName,asc") String[] sort,
+                                                            @RequestParam(required = false, defaultValue = "last_name,asc") String[] sort,
                                                             @RequestParam(required = false) Character gender,
                                                             @RequestParam(required = false) String hireDateBefore,
                                                             @RequestParam(required = false) String hireDateAfter) {
