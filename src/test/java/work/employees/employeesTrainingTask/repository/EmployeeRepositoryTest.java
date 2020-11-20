@@ -1,21 +1,16 @@
 package work.employees.employeesTrainingTask.repository;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import work.employees.employeesTrainingTask.domain.*;
-import work.employees.employeesTrainingTask.domain.embeddableId.DepartmentEmployeeId;
-import work.employees.employeesTrainingTask.domain.embeddableId.DepartmentManagerId;
-import work.employees.employeesTrainingTask.domain.embeddableId.SalaryId;
 import work.employees.employeesTrainingTask.domain.embeddableId.TitleId;
-import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 
 
 import java.text.ParseException;
@@ -23,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static work.employees.employeesTrainingTask.utils.TestUtils.sampleEmployee;
 
@@ -75,9 +72,9 @@ public class EmployeeRepositoryTest {
         employee2.setEmployeeNumber(2);
         employee3.setEmployeeNumber(3);
         employee1.setTitles(List.of(
-                        new Title(new TitleId(employee1.getEmployeeNumber(), "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
-                        new Title(new TitleId(employee1.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06")))
-                );
+                new Title(new TitleId(employee1.getEmployeeNumber(), "TestTitle1", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
+                new Title(new TitleId(employee1.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2006-06-06")))
+        );
         employee2.setTitles(List.of(
                 new Title(new TitleId(employee2.getEmployeeNumber(), "TestTitle2", dateFormatter.parse("2001-01-01")), dateFormatter.parse("2003-03-03")),
                 new Title(new TitleId(employee2.getEmployeeNumber(), "TestTitle3", dateFormatter.parse("2004-04-04")), dateFormatter.parse("2026-06-06")))
@@ -90,7 +87,7 @@ public class EmployeeRepositoryTest {
         entityManager.persistAndFlush(employee2);
         entityManager.persistAndFlush(employee3);
         List<Employee> expected = List.of(employee2, employee3);
-        List<Employee> actual = victim.getEmployeesByTitle("TestTitle3","%","9999-01-01","0000-01-01",PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
+        List<Employee> actual = victim.getEmployeesByTitle("TestTitle3", "%", "9999-01-01", "0000-01-01", PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
         assertEquals(expected, actual);
     }
 
@@ -142,7 +139,7 @@ public class EmployeeRepositoryTest {
         entityManager.persistAndFlush(employee4);
         entityManager.persistAndFlush(employee5);
         List<Employee> expected = List.of(employee3);
-        List<Employee> actual = victim.getEmployeesByTitle("TestTitle1","F","1995-01-01","1991-01-01", PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
+        List<Employee> actual = victim.getEmployeesByTitle("TestTitle1", "F", "1995-01-01", "1991-01-01", PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
         assertEquals(expected, actual);
     }
 
@@ -174,15 +171,68 @@ public class EmployeeRepositoryTest {
         entityManager.persistAndFlush(employee4);
         entityManager.persistAndFlush(employee5);
         List<Employee> expected = List.of(employee2, employee4);
-        List<Employee> actual = victim.findAllWithParams("F","1997-01-01","1991-01-01", PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
+        List<Employee> actual = victim.findAllWithParams("F", "1997-01-01", "1991-01-01", PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void shouldGetEmployeesByDepartmentName() throws ParseException {
+        Department dep1 = new Department("d001", "TestDep1");
+        Department dep2 = new Department("d002", "TestDep2");
+        Department dep3 = new Department("d003", "TestDep3");
+        entityManager.persistAndFlush(dep1);
+        entityManager.persistAndFlush(dep2);
+        entityManager.persistAndFlush(dep3);
+        Employee employee1 = sampleEmployee();
+        Employee employee2 = sampleEmployee();
+        Employee employee3 = sampleEmployee();
+        Employee employee4 = sampleEmployee();
+        Employee employee5 = sampleEmployee();
+        employee1.setGender('F');
+        employee2.setGender('F');
+        employee3.setGender('M');
+        employee4.setGender('F');
+        employee5.setGender('F');
+        employee1.setHireDate(dateFormatter.parse("1990-01-01"));
+        employee2.setHireDate(dateFormatter.parse("1992-01-01"));
+        employee3.setHireDate(dateFormatter.parse("1994-01-01"));
+        employee4.setHireDate(dateFormatter.parse("1996-01-01"));
+        employee5.setHireDate(dateFormatter.parse("1998-01-01"));
+        employee1.setEmployeeNumber(1);
+        employee2.setEmployeeNumber(2);
+        employee3.setEmployeeNumber(3);
+        employee4.setEmployeeNumber(4);
+        employee5.setEmployeeNumber(5);
+        employee1.setDepartments(List.of(
+                new DepartmentEmployee(dateFormatter.parse("1994-01-01"), dateFormatter.parse("2024-01-01"), employee1, dep1),
+                new DepartmentEmployee(dateFormatter.parse("1990-01-01"), dateFormatter.parse("1994-01-01"), employee1, dep2)
+        ));
+        employee2.setDepartments(List.of(
+                new DepartmentEmployee(dateFormatter.parse("1994-01-01"), dateFormatter.parse("2024-01-01"), employee2, dep2),
+                new DepartmentEmployee(dateFormatter.parse("1990-01-01"), dateFormatter.parse("1994-01-01"), employee2, dep3)
+        ));
+        employee3.setDepartments(List.of(
+                new DepartmentEmployee(dateFormatter.parse("1994-01-01"), dateFormatter.parse("2024-01-01"), employee3, dep1),
+                new DepartmentEmployee(dateFormatter.parse("1990-01-01"), dateFormatter.parse("1994-01-01"), employee3, dep3)
+        ));
+        employee4.setDepartments(List.of(
+                new DepartmentEmployee(dateFormatter.parse("1994-01-01"), dateFormatter.parse("2024-01-01"), employee4, dep3),
+                new DepartmentEmployee(dateFormatter.parse("1990-01-01"), dateFormatter.parse("1994-01-01"), employee4, dep2)
+        ));
+        employee5.setDepartments(List.of(
+                new DepartmentEmployee(dateFormatter.parse("1994-01-01"), dateFormatter.parse("2024-01-01"), employee5, dep2),
+                new DepartmentEmployee(dateFormatter.parse("1990-01-01"), dateFormatter.parse("1994-01-01"), employee5, dep1)
+        ));
+        entityManager.persistAndFlush(employee1);
+        entityManager.persistAndFlush(employee2);
+        entityManager.persistAndFlush(employee3);
+        entityManager.persistAndFlush(employee4);
+        entityManager.persistAndFlush(employee5);
+        List<Employee> expected = List.of(employee2, employee5);
+        List<Employee> actual = victim.getEmployeesByDepartmentName("TestDep2", "%", "9999-01-01", "0000-01-01", PageRequest.of(0, 10, Sort.by(new ArrayList<>())));
+        assertEquals(expected, actual);
 
-
-
-
-
+    }
 
 
 }

@@ -1,7 +1,5 @@
 package work.employees.employeesTrainingTask.request;
 
-import work.employees.employeesTrainingTask.domain.*;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;

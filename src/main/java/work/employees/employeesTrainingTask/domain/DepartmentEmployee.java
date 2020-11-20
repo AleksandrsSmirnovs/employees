@@ -3,7 +3,6 @@ package work.employees.employeesTrainingTask.domain;
 import work.employees.employeesTrainingTask.domain.embeddableId.DepartmentEmployeeId;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;

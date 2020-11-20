@@ -1,7 +1,5 @@
 package work.employees.employeesTrainingTask.response;
 
-import work.employees.employeesTrainingTask.domain.Employee;
-
 import java.util.Objects;
 
 public class EmployeeDeleteResponse {

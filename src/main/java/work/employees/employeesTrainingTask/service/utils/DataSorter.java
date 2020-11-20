@@ -1,10 +1,8 @@
 package work.employees.employeesTrainingTask.service.utils;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.*;

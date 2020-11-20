@@ -9,8 +9,8 @@ import java.util.List;
 @Repository
 public interface DepartmentRepository extends PagingAndSortingRepository<Department, String> {
 
-    public List<Department> findAllByOrderByDepartmentNameDesc();
+    List<Department> findAllByOrderByDepartmentNameDesc();
 
-    public List<Department> findAllByOrderByDepartmentNameAsc();
+    List<Department> findAllByOrderByDepartmentNameAsc();
 
 }

@@ -20,10 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static work.employees.employeesTrainingTask.utils.TestUtils.*;
-import static work.employees.employeesTrainingTask.utils.TestUtils.sampleEmployeeList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmployeeServiceTest {
@@ -81,7 +79,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenCannotFindEmployeeById() throws ParseException {
+    public void shouldThrowExceptionWhenCannotFindEmployeeById() {
         when(repository.findById(any())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> victim.getEmployeeById(123))
                 .isInstanceOf(ItemNotFoundException.class)
@@ -104,7 +102,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenTryingToDeleteEmployeeThatDoesNotExist() throws ParseException {
+    public void shouldThrowExceptionWhenTryingToDeleteEmployeeThatDoesNotExist() {
         when(repository.findById(any())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> victim.deleteEmployee(123)).isInstanceOf(ItemNotFoundException.class).hasMessage("Employee with id 123 not found");
         verify(repository, times(1)).findById(123);
@@ -123,7 +121,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenTryingToSaveEmployeeWithExistingId() throws ParseException {
+    public void shouldThrowExceptionWhenTryingToSaveEmployeeWithExistingId() {
         when(repository.getMaxId()).thenReturn(123);
         assertThatThrownBy(() -> victim.saveEmployee(sampleCreateEmployeeRequest()))
                 .isInstanceOf(ItemAlreadyExistsException.class)

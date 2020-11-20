@@ -20,7 +20,7 @@ public class ControllerExceptionHandler {
         if (e instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException ex = (MethodArgumentNotValidException) e;
             String message = ex.getBindingResult().getFieldErrors().stream()
-                    .map(error-> error.getField() + " : " + error.getDefaultMessage())
+                    .map(error -> error.getField() + " : " + error.getDefaultMessage())
                     .collect(Collectors.joining(" , "));
             log.warn("Validation failed. " + message);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(message));

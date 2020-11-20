@@ -60,4 +60,13 @@ public class DataSorterTest {
         List<Sort.Order> actual = victim.getOrders(new String[]{"param1", "param2,desc"});
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void shouldGetOrdersWithDefaultParametersWhenNoParamsPassed() {
+        List<Sort.Order> expected = List.of(
+                new Sort.Order(Sort.Direction.ASC, "last_name")
+        );
+        List<Sort.Order> actual = victim.getOrders(new String[]{"last_name", "asc"});
+        assertEquals(expected, actual);
+    }
 }

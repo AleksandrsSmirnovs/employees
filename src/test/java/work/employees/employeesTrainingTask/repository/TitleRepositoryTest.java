@@ -1,6 +1,5 @@
 package work.employees.employeesTrainingTask.repository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +84,6 @@ class TitleRepositoryTest {
         List<String> actual = victim.getAllTitlesDesc();
         assertEquals(expected, actual);
     }
-
 
 
 }

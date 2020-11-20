@@ -9,31 +9,20 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import work.employees.employeesTrainingTask.domain.Department;
-import work.employees.employeesTrainingTask.domain.Employee;
 import work.employees.employeesTrainingTask.exception.ItemNotFoundException;
 import work.employees.employeesTrainingTask.repository.DepartmentRepository;
 import work.employees.employeesTrainingTask.repository.EmployeeRepository;
-import work.employees.employeesTrainingTask.response.DepartmentResponse;
 import work.employees.employeesTrainingTask.response.SimpleDepartmentResponse;
 import work.employees.employeesTrainingTask.service.utils.DataSorter;
 import work.employees.employeesTrainingTask.service.utils.ResponseMapper;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.Collections.reverseOrder;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static work.employees.employeesTrainingTask.utils.TestUtils.*;
-import static work.employees.employeesTrainingTask.utils.TestUtils.sampleDepartmentList;
-import static work.employees.employeesTrainingTask.utils.TestUtils.sampleEmployeeList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DepartmentServiceTest {
@@ -55,7 +44,7 @@ public class DepartmentServiceTest {
     private DepartmentService victim;
 
     @Test
-    public void shouldFindAllDepartments() throws ParseException {
+    public void shouldFindAllDepartments() {
         when(departmentRepository.findAllByOrderByDepartmentNameAsc()).thenReturn(sampleDepartmentList());
         when(mapper.createSimpleDepartmentResponse(new Department("d001", "testDep1"))).thenReturn(new SimpleDepartmentResponse("d001", "testDep1"));
         when(mapper.createSimpleDepartmentResponse(new Department("d002", "testDep2"))).thenReturn(new SimpleDepartmentResponse("d002", "testDep2"));
@@ -70,7 +59,7 @@ public class DepartmentServiceTest {
     }
 
     @Test
-    public void shouldFindAllDepartmentsDesc() throws ParseException {        ;
+    public void shouldFindAllDepartmentsDesc() {
         when(departmentRepository.findAllByOrderByDepartmentNameDesc()).thenReturn(sampleDepartmentListReversed());
         when(mapper.createSimpleDepartmentResponse(new Department("d001", "testDep1"))).thenReturn(new SimpleDepartmentResponse("d001", "testDep1"));
         when(mapper.createSimpleDepartmentResponse(new Department("d002", "testDep2"))).thenReturn(new SimpleDepartmentResponse("d002", "testDep2"));

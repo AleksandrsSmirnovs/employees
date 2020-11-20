@@ -19,7 +19,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static work.employees.employeesTrainingTask.utils.TestUtils.sampleEmployeeList;
 import static work.employees.employeesTrainingTask.utils.TestUtils.sampleSimpleEmployeeResponseList;
@@ -43,22 +42,22 @@ public class TitleServiceTest {
     private TitleService victim;
 
     @Test
-    public void shouldFindAllTitles() throws ParseException {
+    public void shouldFindAllTitles() {
         when(titleRepository.getAllTitlesAsc()).thenReturn(List.of("title1", "title2", "title3"));
         List<String> expected = List.of("title1", "title2", "title3");
         List<String> actual = victim.getAllTitles("");
         assertEquals(actual, expected);
-        verify(titleRepository,times(1)).getAllTitlesAsc();
+        verify(titleRepository, times(1)).getAllTitlesAsc();
         verifyNoMoreInteractions(titleRepository);
     }
 
     @Test
-    public void shouldFindAllTitlesSortedDesc() throws ParseException {
+    public void shouldFindAllTitlesSortedDesc() {
         when(titleRepository.getAllTitlesDesc()).thenReturn(List.of("title3", "title2", "title1"));
         List<String> expected = List.of("title3", "title2", "title1");
         List<String> actual = victim.getAllTitles("desc");
         assertEquals(actual, expected);
-        verify(titleRepository,times(1)).getAllTitlesDesc();
+        verify(titleRepository, times(1)).getAllTitlesDesc();
         verifyNoMoreInteractions(titleRepository);
     }
 

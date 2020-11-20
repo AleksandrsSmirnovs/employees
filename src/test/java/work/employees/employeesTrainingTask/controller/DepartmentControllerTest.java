@@ -13,12 +13,9 @@ import work.employees.employeesTrainingTask.service.DepartmentService;
 
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static work.employees.employeesTrainingTask.utils.TestUtils.*;
 
 @SpringBootTest
@@ -49,7 +46,7 @@ public class DepartmentControllerTest {
 
     @Test
     public void shouldFindEmployeesByDepartmentName() throws Exception {
-        when(service.getEmployeesByDepartmentName(any(),any(),any(),any(),any(),any(),any())).thenReturn(sampleSimpleEmployeeResponseList());
+        when(service.getEmployeesByDepartmentName(any(), any(), any(), any(), any(), any(), any())).thenReturn(sampleSimpleEmployeeResponseList());
         mockMvc.perform(get("/departments/testDepartment/employees"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -60,14 +57,14 @@ public class DepartmentControllerTest {
                 .andExpect(jsonPath("$[0].firstName").value("Name1"))
                 .andExpect(jsonPath("$[0].lastName").value("LastName1"))
                 .andExpect(jsonPath("$[0].gender").value("M"))
-                .andExpect(jsonPath("$[0].hireDate").value("2001-01-01" ))
+                .andExpect(jsonPath("$[0].hireDate").value("2001-01-01"))
                 .andExpect(jsonPath("$[1].employeeNumber").value(321))
                 .andExpect(jsonPath("$[1].birthDate").value("1982-02-02"))
                 .andExpect(jsonPath("$[1].firstName").value("Name2"))
                 .andExpect(jsonPath("$[1].lastName").value("LastName2"))
                 .andExpect(jsonPath("$[1].gender").value("F"))
-                .andExpect(jsonPath("$[1].hireDate").value("2002-02-02" ));
-        verify(service, times(1)).getEmployeesByDepartmentName(any(),any(),any(),any(),any(),any(),any());
+                .andExpect(jsonPath("$[1].hireDate").value("2002-02-02"));
+        verify(service, times(1)).getEmployeesByDepartmentName(any(), any(), any(), any(), any(), any(), any());
         verifyNoMoreInteractions(service);
     }
 
