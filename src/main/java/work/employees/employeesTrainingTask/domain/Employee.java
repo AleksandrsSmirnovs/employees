@@ -156,8 +156,6 @@ public class Employee {
                 Objects.equals(lastName, employee.lastName) &&
                 Objects.equals(gender, employee.gender) &&
                 Objects.equals(hireDate, employee.hireDate) &&
-                Objects.equals(departments, employee.departments) &&
-                Objects.equals(managedDepartments, employee.managedDepartments) &&
                 Objects.equals(salaries, employee.salaries) &&
                 Objects.equals(titles, employee.titles);
     }
